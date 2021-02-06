@@ -17,6 +17,7 @@ image: "rust:latest"
 #   - apt-get update -yqq
 #   - apt-get install -yqq --no-install-recommends build-essential
 
+
 # Use cargo to test the project
 test:cargo:
   script:
@@ -24,8 +25,7 @@ test:cargo:
     - cargo test --workspace --verbose
 
 
-pages:
-  stage: doc
+doc:pages:
   script:
     - cargo doc --no-deps
     - mv target/doc public
@@ -34,3 +34,9 @@ pages:
       - public
   only:
     - master
+
+cache:
+  paths:
+    - apt/
+    - cargo/
+    - target/
