@@ -1,5 +1,5 @@
 pub mod error;
 mod map;
 mod seq;
-pub(crate) mod ser;
+pub mod ser;
 mod sct;

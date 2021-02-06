@@ -1,9 +1,9 @@
 use crate::Value;
 use std::collections::HashMap;
 
+/// A non-terminating value, structure or array.
 #[derive(Clone, Debug)]
 pub enum Element {
-    // Basic Types
     /// An anonymous value containing no data.
     Unit,
     /// A primitive, terminating value.

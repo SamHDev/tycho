@@ -1,6 +1,7 @@
 use std::hash::{Hash, Hasher};
 
 #[derive(Clone, Debug, PartialEq)]
+/// A primitive, terminating value.
 pub enum Value {
     Boolean(bool),
 
