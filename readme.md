@@ -27,12 +27,12 @@ Used within the [Luna Server](https://github.com/samhdev/luna) project as the ma
 ------ BSON ------
 29 00 00 00 02 66 6f 6f 00 0c 00 00 00 48 65 6c 6c 6f 20 57 6f 72 6c 64 00 10 62 61 72 00 0a 00 00 00 08 62 61 7a 00 01 00
 ------ TYCHO ------
-04 03 03 66 6f 6f 1D 11 48 65 6c 6c 6f 20 57 6f 72 6c 64 03 62 61 72 12 10 03 62 61 7a 10 01
+40 03 03 66 6f 6f 1d 11 48 65 6c 6c 6f 20 57 6f 72 6c 64 93 62 61 72 12 10 03 62 61 7a 10 01
 ```
 
 #### Explanation
 ```
-04 - Structure
+40 - Structure
     03 - Structure of length 3
     (Element 0)
         03 - Key has length 3
@@ -64,6 +64,8 @@ Used within the [Luna Server](https://github.com/samhdev/luna) project as the ma
             62 - "b"
             61 - "a"
             7a - "z"
-        12 - Value is a boolean
+        10 - Value is a boolean
             01 - true
+
+40 03 03 66 6f 6f 1d 11 48 65 6c 6c 6f 20 57 6f 72 6c 64 93 62 61 72 12 10 03 62 61 7a 10 01
 ```

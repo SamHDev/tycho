@@ -14,6 +14,7 @@ As stated above, two consecutive quartets will become one octet.
 ### Defined Types
 The following types are basic/primitive types used within the specification.
 ```
+nibble          1/2 byte (4-bits)
 byte            1 byte (8-bits)
 unsigned8       1 byte (8-bit unsigned integer)
 unsigned16      2 bytes (16-bit unsigned integer, big-endian)
@@ -99,7 +100,7 @@ data(i:ident)  ::= i=0x0 0x00                        Boolean False
                  | i=0xE char                        A single UTF-8 character
                  | i=0xF bytes                       A array of octets
 
-ident          ::= nibble                            A 
+ident          ::= nibble                            A identifier for a value 
 
 string         ::= varlength *byte                   An UTF-8 string, where (*byte) is an array of octets with the
                  |                                   length specified with the varlength
@@ -118,8 +119,8 @@ element        ::= 0x0 0x0                           Unit (Null/Nil) - No data
                  | 0x4 0x0 varlength *field          A structure, a variable type key-element map, defined by an array
                  |                                   of field with length given by the preceding varlength
                  | 0x5 0x0 string element            A variable element type with a given name.
-                 | 0x6 ident varlength *item(ident)
-                 | 0x7 ident varlength *data(ident)
+                 | 0x6 ident varlength *item(ident)  A Map, a fixed type value-element map.
+                 | 0x7 ident varlength *data(ident)  A List, a fixed tpye value only array.
 
 field          ::= string element                    A structure field, containg a key (string) and value (element)
 
