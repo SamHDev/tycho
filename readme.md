@@ -9,6 +9,12 @@ Used within the [Luna Server](https://github.com/samhdev/luna) project as the ma
 > [Rust Documentation](https://docs.rs/tycho) 
 > : :
 > [Rust Crate](https://crates.io/crates/tycho)
+>
+> [Python Package](https://pypi.org/project/tycho-py)
+> : :
+> [Python Libary Github](https://github.com/samhdev/tycho-py)
+>
+> [Tycho Debug](https://github.com/samhdev/tycho-debug)
 
 ### Design Targets
 - Self describing
