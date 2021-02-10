@@ -262,6 +262,7 @@ pub fn to_element<T: Serialize>(o: &T) -> Result<Element, SerializeError> {
 mod tests {
     use crate::{to_bytes, from_bytes};
     use serde::{Serialize, Deserialize};
+    use crate::decode::decode;
 
     #[derive(Debug, Serialize, Deserialize, PartialEq)]
     pub struct Example {
@@ -304,5 +305,11 @@ mod tests {
         test_enum(ExampleEnum::B(16));
         test_enum(ExampleEnum::C(1, 2, 3));
         test_enum(ExampleEnum::D { one: false, two: "Hi".to_string() });
+    }
+
+    #[test]
+    fn error_fixing() {
+        let data = std::fs::read("com.key").unwrap();
+        println!("{:?}", decode(data))
     }
 }
