@@ -5,7 +5,7 @@
 //! To get started, you can import the latest release from [crates.io](https://crates.io/crates/tycho)
 //! ```toml
 //! [dependencies]
-//! tycho = "0.0.5"
+//! tycho = "0.0.6"
 //! ```
 //! **or** you can use the developmental version from the public [git repository](https://github.com/SamHDev/tycho)
 //! ```toml
