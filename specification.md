@@ -127,3 +127,6 @@ field          ::= string element                    A structure field, containg
 item(x:ident)  ::= data(x) element                   A map item, containg a key (data/value) and value (element) 
 
 ```
+
+
+MIT LICENSE
