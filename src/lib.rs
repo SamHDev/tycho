@@ -306,10 +306,4 @@ mod tests {
         test_enum(ExampleEnum::C(1, 2, 3));
         test_enum(ExampleEnum::D { one: false, two: "Hi".to_string() });
     }
-
-    #[test]
-    fn error_fixing() {
-        let data = std::fs::read("com.key").unwrap();
-        println!("{:?}", decode(data))
-    }
 }
