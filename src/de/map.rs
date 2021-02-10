@@ -8,14 +8,16 @@ use crate::encode::element::ElementEncoder;
 
 pub struct TychoMapDeserializer {
     map: HashMap<Value, Element>,
-    key: Option<Value>
+    key: Option<Value>,
+    increment: usize
 }
 
 impl TychoMapDeserializer {
     pub(crate) fn new(v: HashMap<Value, Element>) -> Self {
         Self {
             map: v,
-            key: None
+            key: None,
+            increment: 0
         }
     }
 
@@ -36,7 +38,8 @@ impl<'a> MapAccess<'a> for TychoMapDeserializer {
 
     fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<<K as DeserializeSeed<'a>>::Value>, Self::Error> where
         K: DeserializeSeed<'a> {
-        if let Some(key) = self.map.keys().nth(0) {
+        if let Some(key) = self.map.keys().nth(self.increment) {
+            self.increment += 1;
             self.key = Some(key.clone());
             Ok(Some(seed.deserialize(TychoDeserializer::new(Element::Value(key.clone())))?))
         } else {

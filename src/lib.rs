@@ -121,7 +121,6 @@ pub fn to_element<T: Serialize>(o: &T) -> Result<Element, SerializeError> {
 mod tests {
     use crate::{to_bytes, from_bytes};
     use serde::{Serialize, Deserialize};
-    use crate::decode::decode;
 
     #[derive(Debug, Serialize, Deserialize, PartialEq)]
     pub struct Example {
@@ -164,12 +163,5 @@ mod tests {
         test_enum(ExampleEnum::B(16));
         test_enum(ExampleEnum::C(1, 2, 3));
         test_enum(ExampleEnum::D { one: false, two: "Hi".to_string() });
-    }
-
-    #[test]
-    fn debug_error() {
-        let data = vec![80, 11, 105, 110, 105, 116, 46, 115, 101, 114, 118, 101, 114, 64, 1, 3, 107, 101, 121, 64, 2, 1, 101, 113, 3, 1, 0, 1, 1, 110, 113, 64, 128, 198, 130, 157, 122, 135, 212, 252, 72, 207, 117, 60, 214, 157, 234, 185, 13, 99, 20, 155, 56, 1, 36, 153, 4, 59, 225, 82, 226, 148, 12, 73, 89, 121, 125, 175, 42, 209, 162, 48, 228, 255, 184, 198, 239, 43, 69, 113, 255, 40, 122, 109, 132, 137, 61, 247, 54, 84, 132, 247, 81, 110, 66, 109, 164, 98, 73, 202, 32, 117, 143, 43, 71, 131, 199, 171, 138, 53, 87, 157, 195, 180, 209, 59, 189, 254, 231, 245, 144, 189, 53, 162, 59, 39, 17, 153, 115, 69, 50, 86, 5, 222, 100, 43, 227, 111, 151, 87, 139, 142, 117, 135, 246, 121, 130, 34, 104, 17, 29, 185, 143, 87, 220, 168, 18, 221, 152, 164, 1];
-
-        println!("{:?}", decode(data));
     }
 }
