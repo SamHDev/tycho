@@ -6,6 +6,7 @@ use crate::decode::value::decode_value;
 use crate::decode::length::read_var_length;
 use std::collections::HashMap;
 use crate::decode::string::read_string;
+use std::process::id;
 
 pub(crate) fn decode_joint_prefix(reader: &mut Reader) -> Result<(ElementIdent, u8), DecodeError> {
     let byte = reader.read_one()?;
@@ -23,6 +24,7 @@ pub(crate) fn decode_prefixed_element(reader: &mut Reader)  -> Result<Element, D
 }
 
 pub(crate) fn decode_element(ident: ElementIdent, prefix_data: u8, reader: &mut Reader) -> Result<Element, DecodeError> {
+    println!("{:?}", &ident);
     match ident {
         ElementIdent::Unit => Ok(Element::Unit),
         ElementIdent::Value => match ValueIdent::parse(&prefix_data) {
@@ -76,6 +78,7 @@ pub(crate) fn decode_element(ident: ElementIdent, prefix_data: u8, reader: &mut 
             Ok(Element::Map(map))
         }
         ElementIdent::List => {
+            println!("LIST?");
             if prefix_data == ValueIdent::NIL.ident() {
                 return Ok(Element::List(Vec::new()));
             }
@@ -84,6 +87,7 @@ pub(crate) fn decode_element(ident: ElementIdent, prefix_data: u8, reader: &mut 
                 Some(value_ident) => value_ident
             };
             let length = read_var_length(reader)?;
+            println!("{:?} {:?}", &key_type, length);
             let mut list = Vec::new();
             for _ in 0..length {
                 let value = decode_value(key_type.clone(), reader)?;
