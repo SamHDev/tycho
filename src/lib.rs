@@ -89,8 +89,8 @@
 //! # use serde::Serialize;
 //! # use tycho;
 //!
-//! // Define an serilisable object
-//! #[derive(Serialize, Debug)]
+//! // Define a serilisable object
+//! #[derive(Serialize)]
 //! pub struct Person {
 //!     name: String,
 //!     foo: bool,
@@ -107,16 +107,16 @@
 //! let bytes = tycho::to_bytes(&person).unwrap();
 //! ```
 //!
+//!
 //! ## Deserialisation
 //! ```
 //! # use serde::Deserialize;
 //! # use tycho;
 //! # use tycho::Element;
 //! # use tycho::util::TychoStruct;
-//! use std::intrinsics::type_id;
 //!
-//! // Define an deserialisable object
-//! # #[derive(Deserialize, Debug)]
+//! // Define a deserialisable object (see above)
+//! # #[derive(Deserialize)]
 //! # pub struct Person {
 //! #    name: String,
 //! #    foo: bool,
@@ -124,9 +124,8 @@
 //! # }
 //!
 //! // Decode bytes
-//! let bytes = vec![
-//! # 64, 3, 3, 102, 111, 111, 16, 0, 3, 98, 97, 114, 19, 0, 0, 164, 85, 4, 110, 97, 109, 101, 29, 11, 68, 105, 114, 107, 32, 71, 101, 110, 116, 108, 121,
-//! /* ... */ ];
+//! let bytes = /* vec![ ... ] */
+//! # vec![ 64, 3, 3, 102, 111, 111, 16, 0, 3, 98, 97, 114, 19, 0, 0, 164, 85, 4, 110, 97, 109, 101, 29, 11, 68, 105, 114, 107, 32, 71, 101, 110, 116, 108, 121 ];
 //!
 //! let person: Person = tycho::from_bytes(bytes).unwrap();
 //!
