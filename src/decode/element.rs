@@ -6,7 +6,6 @@ use crate::decode::value::decode_value;
 use crate::decode::length::read_var_length;
 use std::collections::HashMap;
 use crate::decode::string::read_string;
-use std::process::id;
 
 pub(crate) fn decode_joint_prefix(reader: &mut Reader) -> Result<(ElementIdent, u8), DecodeError> {
     let byte = reader.read_one()?;
