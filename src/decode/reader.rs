@@ -23,7 +23,6 @@ impl Reader {
 
     pub(crate) fn read_one(&mut self) -> Result<u8, DecodeError> {
         if self.remaining() == 0 {
-            println!("TRACE ERROR 1");
             return Err(DecodeError::UnexpectedEnd { expected: 1, found: 0 });
         }
         self.1 += 1;
@@ -32,7 +31,6 @@ impl Reader {
 
     pub(crate) fn read_many(&mut self, size: usize) -> Result<Vec<u8>, DecodeError> {
         if self.remaining() < size {
-            println!("TRACE ERROR 2");
             return Err(DecodeError::UnexpectedEnd { expected: size as usize, found: self.0.len() });
         }
         self.1 += size;
@@ -43,7 +41,6 @@ impl Reader {
     #[allow(dead_code)]
     pub(crate) fn peek_one(&mut self) -> Result<u8, DecodeError> {
         if self.remaining() == 0 {
-            println!("TRACE ERROR 3");
             return Err(DecodeError::UnexpectedEnd { expected: 1, found: 0 });
         }
         Ok((self.0[self.1]).clone())
@@ -52,7 +49,6 @@ impl Reader {
     #[allow(dead_code)]
     pub(crate) fn peek_many(&mut self, size: usize) -> Result<Vec<u8>, DecodeError> {
         if self.remaining() < size {
-            println!("TRACE ERROR 4");
             return Err(DecodeError::UnexpectedEnd { expected: size as usize, found: self.0.len() });
         }
         let c = self.0[self.1..self.1+size].to_vec();
