@@ -1,6 +1,6 @@
 [package]
 name = "tycho"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Sam Huddart <sam.fucked.up@samh.dev>"]
 edition = "2018"
 description = "A self describing binary format designed around the serde data model."
