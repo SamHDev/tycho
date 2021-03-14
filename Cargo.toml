@@ -1,6 +1,6 @@
 [package]
 name = "tycho"
-version = "0.0.6"
+version = "0.1.0"
 authors = ["Sam Huddart <sam.fucked.up@samh.dev>"]
 edition = "2018"
 description = "A self describing binary format designed around the serde data model."
@@ -8,6 +8,9 @@ license="MIT"
 documentation="https://docs.rs/tycho"
 repository = "https://github.com/samhdev/tycho"
 homepage = "https://github.com/samhdev/tycho"
+
+[features]
+partial = []
 
 [dependencies]
 byteorder = "1.4.2"

@@ -1,3 +1,4 @@
 pub(crate) mod ident;
 pub(crate) mod element;
-// mod encode;
+pub(crate) mod encode;
+pub(crate) mod value;

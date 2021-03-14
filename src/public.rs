@@ -21,3 +21,4 @@ pub fn from_bytes(data: Vec<u8>) -> TychoResult<Element>  {
     let mut buffer = Cursor::new(data);
     read(&mut buffer)
 }
+

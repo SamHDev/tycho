@@ -1,102 +1,60 @@
-use crate::{Element, Value, Number};
+use crate::{Number, Value};
 
-// Inter-op
-impl<T: Into<Value>> Into<Element> for T {
-    fn into(self) -> Element {
-        Element::Value(self.into())
-    }
-}
-impl<T: Into<Number>> Into<Value> for T {
-    fn into(self) -> Value {
-        Value::Number(self.into())
-    }
+macro_rules! number_from {
+    ($id: ident, $type: ty) => {
+        impl From<$type> for Number {
+            fn from(value: $type) -> Self {
+                Number::$id(value)
+            }
+        }
+    };
 }
 
-// Numerical values
-impl Into<Number> for u8 {
-    fn into(self) -> Number {
-        Number::Unsigned8(self)
-    }
-}
-impl Into<Number> for u16 {
-    fn into(self) -> Number {
-        Number::Unsigned16(self)
-    }
-}
-impl Into<Number> for u32 {
-    fn into(self) -> Number {
-        Number::Unsigned32(self)
-    }
-}
-impl Into<Number> for u64 {
-    fn into(self) -> Number {
-        Number::Unsigned64(self)
-    }
-}
-impl Into<Number> for u128 {
-    fn into(self) -> Number {
-        Number::Unsigned128(self)
-    }
-}
-impl Into<Number> for i8 {
-    fn into(self) -> Number {
-        Number::Signed8(self)
-    }
-}
-impl Into<Number> for i16 {
-    fn into(self) -> Number {
-        Number::Signed16(self)
-    }
-}
-impl Into<Number> for i32 {
-    fn into(self) -> Number {
-        Number::Signed32(self)
-    }
-}
-impl Into<Number> for i64 {
-    fn into(self) -> Number {
-        Number::Signed64(self)
-    }
-}
-impl Into<Number> for i128 {
-    fn into(self) -> Number {
-        Number::Signed128(self)
-    }
-}
-impl Into<Number> for f32 {
-    fn into(self) -> Number {
-        Number::Float32(self)
-    }
-}
-impl Into<Number> for f64 {
-    fn into(self) -> Number {
-        Number::Float64(self)
+number_from!(Unsigned8, u8);
+number_from!(Signed8, i8);
+number_from!(Unsigned16, u16);
+number_from!(Signed16, i16);
+number_from!(Unsigned32, u32);
+number_from!(Signed32, i32);
+number_from!(Unsigned64, u64);
+number_from!(Signed64, i64);
+number_from!(Unsigned128, u128);
+number_from!(Signed128, i128);
+number_from!(Float32, f32);
+number_from!(Float64, f64);
+
+impl From<bool> for Value {
+    fn from(value: bool) -> Self {
+        Value::Boolean(value)
     }
 }
 
-// Values
-impl Into<Value> for bool {
-    fn into(self) -> Value {
-        Value::Boolean(self)
+impl From<char> for Value {
+    fn from(value: char) -> Self {
+        Value::Char(value)
     }
 }
-impl Into<Value> for char {
-    fn into(self) -> Value {
-        Value::Char(self)
+
+impl From<String> for Value {
+    fn from(value: String) -> Self {
+        Value::String(value)
     }
 }
-impl Into<Value> for String {
-    fn into(self) -> Value {
-        Value::String(self)
+
+impl From<&str> for Value {
+    fn from(value: &str) -> Self {
+        Value::String(value.to_string())
     }
 }
-impl Into<Value> for &str {
-    fn into(self) -> Value {
-        Value::String(self.to_string())
+
+impl From<Vec<u8>> for Value {
+    fn from(value: Vec<u8>) -> Self {
+        Value::Bytes(value)
     }
 }
-impl Into<Value> for Vec<u8> {
-    fn into(self) -> Value {
-        Value::String(self)
+
+impl From<uuid::Uuid> for Value {
+    fn from(value: uuid::Uuid) -> Self {
+        Value::UUID(value)
     }
 }
