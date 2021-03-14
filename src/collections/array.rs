@@ -5,19 +5,19 @@ use std::convert::TryFrom;
 use crate::into::value::ValueType;
 use std::hash::Hash;
 
-pub struct Map<K: ValueType>(pub(crate) HashMap<K, Element>);
+pub struct
 
-impl<K: ValueType + Eq + Hash> Deref for Map<K> {
-    type Target = HashMap<K, Element>;
+impl<T: ValueType> Deref for Array<T> {
+    type Target = Vec<T>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl<K: ValueType + Eq + Hash> Map<K> {
+impl<T: ValueType> Array<T> {
     pub fn new() -> Self {
-        Self(HashMap::new())
+        Self(Vec::new())
     }
 
     pub fn insert(&mut self, key: K, value: Element) {

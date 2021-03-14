@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use crate::Element;
 use std::ops::Deref;
 use std::convert::TryFrom;
-use std::iter::Map;
 
 pub struct Struct(pub(crate) HashMap<String, Element>);
 

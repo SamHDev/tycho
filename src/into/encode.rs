@@ -7,6 +7,11 @@ macro_rules! number_from {
                 Number::$id(value)
             }
         }
+         impl From<$type> for Value {
+            fn from(value: $type) -> Self {
+                Value::Number(Number::$id(value))
+            }
+        }
     };
 }
 
