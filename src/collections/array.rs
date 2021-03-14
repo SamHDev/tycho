@@ -3,6 +3,7 @@ use crate::Element;
 use std::ops::{Deref, DerefMut};
 
 /// Maps to `Vec<Value>` where items are homogeneous
+#[derive(Debug)]
 pub struct Array<T: ValueType>(pub Vec<T>);
 
 impl<T: ValueType> From<Array<T>> for Element {
@@ -25,3 +26,11 @@ impl<K: ValueType> DerefMut for Array<K> {
     }
 }
 
+impl<T: ValueType> Array<T> {
+    pub fn new() -> Self { Self(Vec::new()) }
+}
+impl<T: ValueType> From<Vec<T>> for Array<T> {
+    fn from(v: Vec<T>) -> Self {
+        Self(v)
+    }
+}

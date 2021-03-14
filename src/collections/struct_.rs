@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 use crate::Element;
 use std::ops::{DerefMut, Deref};
+use std::convert::TryFrom;
 
 /// Maps to `HashMap<String, Element>`
+#[derive(Debug)]
 pub struct Struct(pub HashMap<String, Element>);
 
 impl From<Struct> for Element {
@@ -22,5 +24,33 @@ impl Deref for Struct {
 impl DerefMut for Struct {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
+    }
+}
+
+impl Struct {
+    pub fn new() -> Self { Self(HashMap::new()) }
+
+    pub fn insert<V: Into<Element>>(&mut self, key: &str, value: V) -> Option<Element> {
+        self.0.insert(key.to_string(), value.into())
+    }
+
+    pub fn get(&self, key: &str) -> Option<&Element> {
+        self.0.get(key)
+    }
+
+    pub fn remove(&mut self, key: &str) -> Option<Element> {
+        self.0.remove(key)
+    }
+
+    pub fn value<'x, V: From<&'x Element>>(&'x self, key: &str) -> Option<V> {
+        match V::try_from(self.0.get(key)?) {
+            Ok(x) => Some(x),
+            Err(_) => None
+        }
+    }
+}
+impl From<HashMap<String, Element>> for Struct {
+    fn from(v: HashMap<String, Element>) -> Self {
+        Self(v)
     }
 }

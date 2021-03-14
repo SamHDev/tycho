@@ -2,6 +2,7 @@ use crate::Element;
 use std::ops::{Deref, DerefMut};
 
 /// Maps to `Vec<Element>` where items are heterogeneous
+#[derive(Debug)]
 pub struct List(pub Vec<Element>);
 
 impl From<List> for Element {
@@ -21,5 +22,14 @@ impl Deref for List {
 impl DerefMut for List {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
+    }
+}
+
+impl List {
+    pub fn new() -> Self { Self(Vec::new()) }
+}
+impl From<Vec<Element>> for List {
+    fn from(v: Vec<Element>) -> Self {
+        Self(v)
     }
 }
