@@ -1,3 +1,5 @@
+//! Type prefixes/identities used within the marshall and unmarshall processes - Returned in errors.
+
 #[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub enum NumberIdent {
     Bit,

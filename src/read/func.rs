@@ -1,9 +1,9 @@
 use std::io::Read;
-use crate::{TychoResult, FromResult};
 use byteorder::ReadBytesExt;
+use crate::error::{TychoResult, parse_io};
 
 pub(crate) fn read_byte<R: Read>(reader: &mut R) -> TychoResult<u8> {
-    FromResult::from(reader.read_u8())
+    parse_io(reader.read_u8())
 }
 
 pub(crate) fn read_bytes<R: Read>(reader: &mut R, size: usize) -> TychoResult<Vec<u8>> {

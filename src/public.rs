@@ -1,7 +1,8 @@
 use std::io::{Write, BufWriter, Read, Cursor};
-use crate::{Element, TychoResult, TychoStatus};
+use crate::{Element};
 use crate::write::element::write_element;
 use crate::read::element::read_element;
+use crate::error::{TychoStatus, TychoResult};
 
 pub fn write<W: Write>(writer: &mut W, element: &Element) -> TychoStatus {
     write_element(writer, &element)

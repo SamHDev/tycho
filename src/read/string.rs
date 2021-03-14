@@ -1,7 +1,7 @@
 use std::io::Read;
-use crate::{TychoResult, TychoError};
 use crate::read::length::read_length;
 use crate::read::func::{read_bytes, read_byte};
+use crate::error::{TychoResult, TychoError};
 
 pub(crate) fn read_string<R: Read>(reader: &mut R) -> TychoResult<String> {
     let length = read_length(reader)?;

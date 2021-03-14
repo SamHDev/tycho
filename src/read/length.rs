@@ -1,6 +1,6 @@
 use std::io::{Read};
-use crate::{TychoResult};
 use crate::read::func::read_byte;
+use crate::error::TychoResult;
 
 pub(crate) fn read_length<R: Read>(reader: &mut R) -> TychoResult<usize> {
     let mut number: u64 = 0;

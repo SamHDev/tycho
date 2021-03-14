@@ -1,7 +1,7 @@
 use std::io::{Write, BufWriter};
-use crate::{TychoStatus, TychoError};
 use byteorder::WriteBytesExt;
 use crate::write::length::write_length;
+use crate::error::{TychoStatus, TychoError};
 
 pub(crate) fn write_byte<W: Write>(writer: &mut W, byte: &u8) -> TychoStatus {
     match writer.write_u8(*byte) {

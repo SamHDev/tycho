@@ -1,7 +1,7 @@
-use crate::TychoStatus;
 use crate::write::length::write_length;
 use std::io::Write;
 use crate::write::func::{write_bytes, write_byte};
+use crate::error::TychoStatus;
 
 pub(crate) fn write_string<W: Write>(writer: &mut W, s: &str) -> TychoStatus {
     let bytes = s.as_bytes();

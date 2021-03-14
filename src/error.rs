@@ -1,3 +1,5 @@
+//! Error types returned from tycho marshall/unmarshall/serialise/deserialize processes.
+
 use std::fmt;
 
 #[derive(Debug)]
@@ -13,7 +15,7 @@ impl From<std::io::Error> for TychoError {
     }
 }
 
-pub trait FromResult<T> {
+pub(crate) trait FromResult<T> {
     fn from(r: Result<T,std::io::Error>) -> Self;
 }
 
