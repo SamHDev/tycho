@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+use crate::ValueIdent;
+
+#[derive(Debug, Clone, PartialOrd)]
 pub enum Number {
     Bit(bool),
     Unsigned8(u8),
@@ -14,24 +18,26 @@ pub enum Number {
     Float64(f64)
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq)]
 pub enum Value {
     Null,
     Boolean(bool),
     String(String),
     Char(char),
-    Number(Value),
+    Number(Number),
     Bytes(Vec<u8>),
-    UUID(uuid::Uuid)
+    UUID(uuid::Uuid),
 }
 
+#[derive(Debug, Clone)]
 pub enum Element {
     Unit,
-    Value,
+    Value(Value),
     Option(Option<Box<Element>>),
     Variant(String, Box<Element>),
-    Struct(),
-    List,
-    Array,
-    Map,
-    Compression
+    Struct(HashMap<String, Element>),
+    List(Vec<Element>),
+    Array(ValueIdent, Vec<Value>),
+    Map(ValueIdent, HashMap<Value, Element>),
+    Compression(Box<Element>)
 }

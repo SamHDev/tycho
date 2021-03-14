@@ -1,1 +1,1 @@
-mod map;
+pub(crate) mod hash;

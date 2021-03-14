@@ -1,4 +1,5 @@
-pub(crate) enum NumberIdent {
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
+pub enum NumberIdent {
     Bit,
     Unsigned8,
     Signed8,
@@ -14,7 +15,8 @@ pub(crate) enum NumberIdent {
     Float64
 }
 
-pub(crate) enum ValueIdent {
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
+pub enum ValueIdent {
     Null,
     Boolean,
     String,
@@ -24,7 +26,8 @@ pub(crate) enum ValueIdent {
     UUID
 }
 
-pub(crate) enum ElementIdent {
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
+pub enum ElementIdent {
     Unit,
     Value,
     Some,
