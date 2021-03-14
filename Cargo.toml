@@ -12,6 +12,7 @@ homepage = "https://github.com/samhdev/tycho"
 [dependencies]
 byteorder = "1.4.2"
 serde = "1.0.120"
+uuid = "0.8.2"
 
 [dev-dependencies.serde]
 version = "1.0.120"

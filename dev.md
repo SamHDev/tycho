@@ -8,7 +8,7 @@ BAR(X)					A type referance with a type paramater.
 BAR(X) ::=				A type definition with a paramater.
 byte					A single data byte
 4bytes					4 data bytes.
-SIZE { FOO }		 	Variable length number representing the size/length of the contained bytes.
+SIZE { FOO }            Variable length number representing the size/length of the contained bytes.
 *FOO					Multiple of one item.
 ```
 
@@ -28,13 +28,11 @@ NUMIDENT    ::= "\x00" 						bit
 			  | "\x03" 						u32
 			  | "\x04"						u64
 			  | "\x05"						u128
-			  | "\x06"						u256
 			  | "\x11"						i8
 			  | "\x12"						i16
 			  | "\x13"						i32
 			  | "\x14"						i64
 			  | "\x15"						i128
-			  | "\x16"						i256
 			  | "\x23"						f32
 			  | "\x24"						f64
 			  | "\x25"						decimal128
@@ -54,13 +52,11 @@ NUMBER(X)   ::= X="\x00" byte 				bit
 			  | X="\x03" 4bytes				u32
 			  | X="\x04" 8bytes 			u64
 			  | X="\x05" 16bytes			u128
-			  | X="\x06" 32bytes			u256
 			  | X="\x11" byte    			i8
 			  | X="\x12" 2bytes				i16
 			  | X="\x13" 4bytes 			i32
 			  | X="\x14" 8bytes				i64
 			  | X="\x15" 16bytes			i128
-			  | X="\x16" 32bytes			i256
 			  | X="\x23" 4bytes 			f32
 			  | X="\x24" 8bytes 			f64
 			  | X="\x25" 16bytes			decimal128
