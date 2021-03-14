@@ -15,3 +15,6 @@ pub mod error;
 pub use types::ident;
 pub use types::types::*;
 pub use public::*;
+
+#[cfg(test)]
+mod tests;

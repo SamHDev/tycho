@@ -20,3 +20,6 @@ uuid = "0.8.2"
 [dev-dependencies.serde]
 version = "1.0.120"
 features = ["derive"]
+
+[dev-dependencies.paste]
+version = "1.0.5"

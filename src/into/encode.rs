@@ -1,4 +1,4 @@
-use crate::{Number, Value};
+use crate::{Number, Value, Element};
 
 macro_rules! number_from {
     ($id: ident, $type: ty) => {
@@ -7,9 +7,14 @@ macro_rules! number_from {
                 Number::$id(value)
             }
         }
-         impl From<$type> for Value {
+        impl From<$type> for Value {
             fn from(value: $type) -> Self {
                 Value::Number(Number::$id(value))
+            }
+        }
+        impl From<$type> for Element {
+            fn from(value: $type) -> Self {
+                Element::Value(Value::Number(Number::$id(value)))
             }
         }
     };
@@ -28,38 +33,41 @@ number_from!(Signed128, i128);
 number_from!(Float32, f32);
 number_from!(Float64, f64);
 
-impl From<bool> for Value {
-    fn from(value: bool) -> Self {
-        Value::Boolean(value)
-    }
+macro_rules! value_from {
+    ($id: ident, $type: ty) => {
+        impl From<$type> for Value {
+            fn from(value: $type) -> Self {
+                Value::$id(value)
+            }
+        }
+        impl From<$type> for Element {
+            fn from(value: $type) -> Self {
+                Element::Value(Value::$id(value))
+            }
+        }
+    };
 }
 
-impl From<char> for Value {
-    fn from(value: char) -> Self {
-        Value::Char(value)
-    }
+macro_rules! value_from_proc {
+    ($id: ident, $type: ty, $func: expr) => {
+        impl From<$type> for Value {
+            fn from(value: $type) -> Self {
+                Value::$id($func(value))
+            }
+        }
+        impl From<$type> for Element {
+            fn from(value: $type) -> Self {
+                Element::Value(Value::$id($func(value)))
+            }
+        }
+    };
 }
 
-impl From<String> for Value {
-    fn from(value: String) -> Self {
-        Value::String(value)
-    }
-}
+value_from!(Boolean, bool);
+value_from!(Char, char);
+value_from!(String, String);
+value_from!(Bytes, Vec<u8>);
+value_from!(UUID, uuid::Uuid);
 
-impl From<&str> for Value {
-    fn from(value: &str) -> Self {
-        Value::String(value.to_string())
-    }
-}
-
-impl From<Vec<u8>> for Value {
-    fn from(value: Vec<u8>) -> Self {
-        Value::Bytes(value)
-    }
-}
-
-impl From<uuid::Uuid> for Value {
-    fn from(value: uuid::Uuid) -> Self {
-        Value::UUID(value)
-    }
-}
+value_from_proc!(String, &str, String::from);
+value_from_proc!(Bytes, &[u8], Vec::from);

@@ -1,0 +1,27 @@
+use crate::into::value::ValueType;
+use crate::Element;
+use std::ops::{Deref, DerefMut};
+
+/// Maps to `Vec<Value>` where items are homogeneous
+pub struct Array<T: ValueType>(pub Vec<T>);
+
+impl<T: ValueType> From<Array<T>> for Element {
+    fn from(a: Array<T>) -> Self {
+        Element::Array(T::IDENT, a.0.into_iter().map(|x| x.into()).collect())
+    }
+}
+
+impl<T: ValueType> Deref for Array<T> {
+    type Target = Vec<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<K: ValueType> DerefMut for Array<K> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+

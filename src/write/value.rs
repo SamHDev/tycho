@@ -27,7 +27,7 @@ pub(crate) fn write_value<W: Write>(writer: &mut W, value: &Value) -> TychoStatu
         Value::Null => Ok(()),
         Value::Boolean(v) =>
             if v == &true { write_byte(writer, &0x01) }
-            else { write_byte(writer, &0x02) }
+            else { write_byte(writer, &0x00) }
         Value::String(v) => write_string(writer, v),
         Value::Char(v) => write_char(writer, v),
         Value::Number(v) => write_number(writer, v),
