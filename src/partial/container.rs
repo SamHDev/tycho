@@ -5,20 +5,26 @@ use std::marker::PhantomData;
 
 pub trait PartialContainerType {
     type ItemType;
+    type ItemParam;
 
-    fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>) -> TychoResult<Self::ItemType>;
+    fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>, param: &Self::ItemParam) -> TychoResult<Self::ItemType>;
 }
 
 #[derive(Debug, Clone)]
 pub struct PartialContainer<T: PartialContainerType> {
     pub pointer: PartialPointer,
     pub head: u64,
+    pub param: T::ItemParam,
     _phantom: PhantomData<T>
 }
 
 impl<T: PartialContainerType> PartialContainer<T> {
-    pub(crate) fn new(pos: u64, size: u64, head: u64) -> Self {
-        PartialContainer { pointer: PartialPointer { pos, size }, head, _phantom: Default::default() }
+    pub(crate) fn new(pos: u64, size: u64, head: u64, param: T::ItemParam) -> Self {
+        PartialContainer { pointer: PartialPointer { pos, size }, head, _phantom: Default::default(), param }
+    }
+
+    pub(crate) fn empty(param: T::ItemParam) -> Self {
+        PartialContainer { pointer: PartialPointer { pos: 0, size: 0 }, head: 0, _phantom: Default::default(), param }
     }
 
     pub(crate) fn next_item<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<Option<T::ItemType>> {
@@ -34,7 +40,7 @@ impl<T: PartialContainerType> PartialContainer<T> {
         reader.jump(&(self.pointer.pos + self.head))?;
         let head_start = reader.pointer;
 
-        let item = T::read_item(reader)?;
+        let item = T::read_item(reader, &self.param)?;
 
         // increment head
         self.head += reader.pointer - head_start;

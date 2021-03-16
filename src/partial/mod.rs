@@ -9,4 +9,4 @@ pub mod test;
 
 pub use reader::{PartialReader, PartialPointer};
 pub use element::PartialElement;
-pub use types::{PartialStruct};
+pub use types::{PartialStruct, PartialArray, PartialList, PartialMap};
