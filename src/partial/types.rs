@@ -1,52 +1,66 @@
-use std::io::{Read, Cursor, Write};
+use std::io::{Read, Cursor, Write, Seek, Error as IoError};
 use crate::collections::Struct;
 use crate::{marshall_vec, Value};
 use byteorder::ReadBytesExt;
+use crate::read::element::read_element_ident;
+use crate::error::{TychoError, TychoResult};
+use crate::types::ident::ElementIdent;
+use crate::read::value::{read_value_ident, read_value};
+use crate::read::length::read_length;
 
-pub enum PartialReadError {
-    IoError(std::io::Error),
-    PointerFlushed { head: usize, position: usize }
+
+pub struct PartialReader<R: Read + Write> {
+    reader: R,
+    pointer: u64
 }
 
-pub struct PartialSource<R: Read> {
-    buffer: Vec<u8>,
-    head: usize,
-    read: R
+impl<R: Read + Write> PartialReader<R> {
+
 }
 
-impl PartialSource<Cursor<Vec<u8>>> {
-    pub fn with_bytes(buffer: Vec<u8>) -> Self {
-        let cursor = Cursor::new(buffer);
-        Self::with_reader(cursor)
+#[derive(Debug, Clone)]
+pub struct PartialPointer {
+    pub head: usize,
+    pub size: usize
+}
+
+#[derive(Debug, Clone)]
+pub enum PartialElement {
+    Unit,
+    Value(Value),
+    Struct(PartialStruct)
+}
+
+impl PartialElement {
+    pub fn read<R: Read + Seek>(reader: &mut R) -> TychoResult<Self> {
+        let ident = read_element_ident(reader)?;
+
+        match ident {
+            ElementIdent::Unit => Ok(PartialElement::Unit),
+            ElementIdent::Value => {
+                let prefix = read_value_ident(reader)?;
+                let value = read_value(reader, &prefix)?;
+                Ok(PartialElement::Value(value))
+            }
+            ElementIdent::Struct => {
+                let size = read_length(reader)?;
+                reader.
+            }
+
+            _ => { panic!("{:?}", ident)}
+        }
     }
 }
 
-impl<R: Read> PartialSource<R> {
-    pub fn with_reader(read: R) -> Self { Self { buffer: vec![], head: 0, read } }
-
-
-    pub fn read_at(&mut self, pos: usize) -> Result<PartialReadError, E> {
-        match
-    }
-
-    pub fn flush(&mut self) {
-        self.head += self.buffer.len();
-        self.buffer.clear();
-    }
-
-    pub fn head(&mut self) -> PartialPointer<R> {
-
-    }
+#[derive(Debug, Clone)]
+pub struct PartialStruct {
+    pub pointer: PartialPointer
 }
 
-
-pub struct PartialPointer<R: Read> {
-    position: usize,
-    size: usize
-}
-
-pub enum PartialElement<R: Read> {
-
+impl PartialStruct {
+    pub fn next<R: Read + Seek>(&self, reader: &mut PartialReader<R>) -> IoResult<Option<(String, PartialElement)>> {
+        reader.reader.read_u8()
+    }
 }
 
 
@@ -64,8 +78,7 @@ fn test() {
 
     println!("{:?}", bytes);
 
-    let mut reader = PartialSource::with_bytes(bytes);
+    let mut reader = Cursor::new(bytes);
 
-    let name = reader.head();
-    // println!("{:?}", name)
+
 }
