@@ -1,0 +1,51 @@
+\documentclass{report}
+
+\author{Sam Huddart}
+\title{Tycho 7 Specifcation}
+\date {17/03/2021}
+
+\begin{document}
+\maketitle
+
+\section {Design}
+\subsection{Requirements}
+
+The original purpose of the Tycho binary format was a transmission format, aiming to be small in size while still being
+self discribing and offing types that respected the language that I worked in. Other binary formats such as BSON and
+MessagePack were unable to fullfill this.
+
+However a new binary format is required for my astra database project, and small transmission siszes, while enticing are not
+the main requirement anymore. It makes sense for me to redesign the tycho binary format, to achive theese requirements:
+
+\begin{description}
+    \item[-] Simple/Low proccessing to read.
+    \item[-] Contain all types of Rust/Serde data model
+    \item[-] Support UUIDs
+    \item[-] Partial Traversal for large amounts of data.
+    \item[-] Small enough for viable tranmission.
+\end{description}
+
+\section{Specifcation}
+\subsection{Types}
+Tycho comes with two types of data, \textbf{Values} and \textbf{Elements}. Values are primative, terminating data such as
+strings, booleans, numbers and byte arrays. Elements are non-terminating data and have the ability to contain other
+values and elements.
+
+\subsubsection{Values}
+Values contain two components; An \textbf{Ident} "prefix" and their respective data. A value's prefix does not need to be
+adjacent to value, in a few cases a parent element can define a the Value Ident and the inner values should be read
+accordingly. Value's Idents can be one or two bytes long.
+
+\begin{center}
+\begin{tabular}{| c | c | c | c | c |}
+\textbf{Name} & \textbf{Rust Type} & \textbf{Ident} & \textbf{Data} & \textbf{Description} \\
+
+Null & N/A & 0x00 & No Data & A null type, used to signify no type or no length. \\
+
+Boolean & bool & 0x01 & 1 byte & A boolean type, where the single data byte is 0x00 (false) or 0x01 (true) \\
+
+
+\end{tabular}
+\end{center}
+
+\end{document}

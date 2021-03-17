@@ -1,12 +1,14 @@
 //! Error types returned from tycho marshall/unmarshall/serialise/deserialize processes.
-
 use std::fmt;
 
 #[derive(Debug)]
 pub enum TychoError {
     Io(std::io::Error),
     InvalidIdent { found: u8, expecting: String },
-    StringError(std::string::FromUtf8Error)
+    StringError(std::string::FromUtf8Error),
+
+    #[cfg(feature="partial_state")]
+    OutdatedPointer
 }
 
 impl From<std::io::Error> for TychoError {
@@ -35,6 +37,8 @@ pub(crate) fn parse_io<T>(r: Result<T,std::io::Error>) -> TychoResult<T> {
     }
 }
 
+
+
 impl fmt::Display for TychoError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -42,6 +46,9 @@ impl fmt::Display for TychoError {
             TychoError::StringError(x) => x.fmt(f),
             TychoError::InvalidIdent { found, expecting }
                 => f.write_str(&format!("Found invalid ident byte '{}' when reading {}", found, expecting)),
+
+            #[cfg(feature="partial_state")]
+            TychoError::OutdatedPointer => f.write_str("Failed to reference partial pointer, outdated in respect to reader.")
         }
     }
 }

@@ -21,8 +21,11 @@ fn test() {
     let root = reader.element().unwrap();
 
     if let PartialElement::Struct(mut s) = root {
+        println!("{:?}", s.pointer);
         for (key, value) in s.iter(&mut reader) {
             println!("{}: {:?}", key, value);
         }
+        s.top();
+        println!("{:?}", s.collect(&mut reader));
     }
 }

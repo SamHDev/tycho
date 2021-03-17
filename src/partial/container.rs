@@ -1,13 +1,15 @@
-use std::io::{Read, Seek};
+use std::io::{Read, Seek, Write, SeekFrom};
 use crate::partial::reader::{PartialReader, PartialPointer};
-use crate::error::TychoResult;
+use crate::error::{TychoResult, TychoError};
 use std::marker::PhantomData;
 
 pub trait PartialContainerType {
     type ItemType;
     type ItemParam;
+    type ItemStandard;
 
     fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>, param: &Self::ItemParam) -> TychoResult<Self::ItemType>;
+    fn standardise(items: Vec<T::ItemType>) -> TychoResult<Self::ItemStandard>;
 }
 
 #[derive(Debug, Clone)]
@@ -19,15 +21,20 @@ pub struct PartialContainer<T: PartialContainerType> {
 }
 
 impl<T: PartialContainerType> PartialContainer<T> {
-    pub(crate) fn new(pos: u64, size: u64, head: u64, param: T::ItemParam) -> Self {
-        PartialContainer { pointer: PartialPointer { pos, size }, head, _phantom: Default::default(), param }
+    pub(crate) fn new(pointer: PartialPointer, head: u64, param: T::ItemParam) -> Self {
+        PartialContainer { pointer, head, _phantom: Default::default(), param }
     }
 
-    pub(crate) fn empty(param: T::ItemParam) -> Self {
-        PartialContainer { pointer: PartialPointer { pos: 0, size: 0 }, head: 0, _phantom: Default::default(), param }
+    pub(crate) fn empty(pointer: PartialPointer, param: T::ItemParam) -> Self {
+        PartialContainer { pointer, head: 0, _phantom: Default::default(), param }
     }
 
     pub(crate) fn next_item<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<Option<T::ItemType>> {
+        #[cfg(feature="partial_state")]
+        if self.pointer.ident != reader.ident {
+            return Err(TychoError::OutdatedPointer)
+        }
+
         // Check that the list is not finished
         if self.head == self.pointer.size {
             return Ok(None);
@@ -61,6 +68,36 @@ impl<T: PartialContainerType> PartialContainer<T> {
     pub fn iter<'x, R: Read + Seek>(&'x mut self, reader: &'x mut PartialReader<R>) -> PartialContainerIterator<'x, T, R> {
         PartialContainerIterator::new(self, reader)
     }
+
+    pub fn collect<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<Vec<T::ItemType>> {
+        let mut items = Vec::new();
+        while let Some(item) = self.next_item(reader)? {
+            items.push(item);
+        }
+        Ok(items)
+    }
+
+    pub fn top(&mut self) {
+        self.head = 0;
+    }
+
+    /*pub fn standardise<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<T::ItemStandard> {
+        let head = self.head;
+        self.head = 0;
+
+        let items = self.collect(reader)?;
+
+        let standard = T::standardise(items)?;
+
+        self.head = head;
+
+        Ok(standard)
+    }
+
+    pub fn replace<R: Read + Seek + Write>(&mut self, reader: &mut PartialReader<R>, element: T::) {
+        reader.jump(&self.pointer.pos);
+        reader.reader.write_all(&element)
+    }*/
 }
 
 pub struct PartialContainerIterator<'x, T: PartialContainerType, R: Read + Seek>(
