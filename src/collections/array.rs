@@ -1,6 +1,7 @@
-use crate::into::value::ValueType;
-use crate::Element;
 use std::ops::{Deref, DerefMut};
+
+use crate::Element;
+use crate::into::value::ValueType;
 
 /// Maps to `Vec<Value>` where items are homogeneous
 #[derive(Debug)]

@@ -1,10 +1,11 @@
 use std::io::Write;
-use byteorder::{WriteBytesExt, BE};
 
-use crate::{Number};
-use crate::write::func::write_byte;
+use byteorder::{BE, WriteBytesExt};
+
+use crate::Number;
+use crate::error::{parse_io, TychoStatus};
 use crate::types::ident::NumberIdent;
-use crate::error::{TychoStatus, parse_io};
+use crate::write::func::write_byte;
 
 pub(crate) const NUM_LEN_1: u8 = 0x00;
 pub(crate) const NUM_LEN_8: u8 = 0x01;

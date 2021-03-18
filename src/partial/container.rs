@@ -1,7 +1,8 @@
 use std::io::{Read, Seek};
-use crate::partial::reader::{PartialReader, PartialPointer};
-use crate::error::{TychoResult, TychoError};
 use std::marker::PhantomData;
+
+use crate::error::{TychoError, TychoResult};
+use crate::partial::reader::{PartialPointer, PartialReader};
 
 pub trait PartialContainerType {
     type ItemType;

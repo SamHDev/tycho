@@ -1,11 +1,12 @@
-use std::io::{Write, BufWriter};
-use crate::{Element};
-use crate::write::func::{write_byte, write_buffer};
-use crate::write::value::{write_value_ident, write_value};
-use crate::into::ident::Ident;
-use crate::write::string::write_tstring;
-use crate::types::ident::ValueIdent;
+use std::io::{BufWriter, Write};
+
+use crate::Element;
 use crate::error::TychoStatus;
+use crate::into::ident::Ident;
+use crate::types::ident::ValueIdent;
+use crate::write::func::{write_buffer, write_byte};
+use crate::write::string::write_tstring;
+use crate::write::value::{write_value, write_value_ident};
 
 pub(crate) fn write_element<W: Write>(writer: &mut W, element: &Element) -> TychoStatus {
     match element {

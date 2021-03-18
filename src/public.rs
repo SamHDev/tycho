@@ -1,8 +1,12 @@
-use std::io::{Write, BufWriter, Read, Cursor};
-use crate::{Element};
-use crate::write::element::write_element;
+use std::io::{BufWriter, Cursor, Read, Write};
+
+#[cfg(feature="async_tokio")]
+pub use async_tokio_public::*;
+
+use crate::Element;
+use crate::error::{TychoResult, TychoStatus};
 use crate::read::element::read_element;
-use crate::error::{TychoStatus, TychoResult};
+use crate::write::element::write_element;
 
 /// Marshall an element to a byte buffer or writable object.
 pub fn marshall<W: Write, E: Into<Element>>(writer: &mut W, element: E) -> TychoStatus {
@@ -26,5 +30,30 @@ pub fn unmarshall<R: Read>(reader: &mut R) -> TychoResult<Element> {
 pub fn unmarshall_vec(data: Vec<u8>) -> TychoResult<Element>  {
     let mut buffer = Cursor::new(data);
     unmarshall(&mut buffer)
+}
+
+
+
+#[cfg(feature="async_tokio")]
+mod async_tokio_public {
+    use std::io::Cursor;
+
+    use tokio::io::AsyncRead;
+
+    use crate::Element;
+    use crate::error::TychoResult;
+    use crate::read::async_tokio::element::read_element_async;
+
+    /// Unmarshall an element from a async readable object.
+    pub async fn unmarshall_async<R: AsyncRead + Unpin + Send>(reader: &mut R) -> TychoResult<Element> {
+        read_element_async(reader).await
+    }
+
+
+    /// Unmarshall an element from a vec of bytes.
+    pub async fn unmarshall_vec_async(data: Vec<u8>) -> TychoResult<Element>  {
+        let mut buffer = Cursor::new(data);
+        unmarshall_async(&mut buffer).await
+    }
 }
 

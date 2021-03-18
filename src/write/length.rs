@@ -1,6 +1,7 @@
-use std::io::{Write};
-use crate::write::func::write_byte;
+use std::io::Write;
+
 use crate::error::TychoStatus;
+use crate::write::func::write_byte;
 
 pub(crate) fn write_length<W: Write>(writer: &mut W, mut length: usize) -> TychoStatus {
     loop {

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use crate::types::ident::ValueIdent;
 
+use crate::types::ident::ValueIdent;
 
 #[derive(Debug, Clone, PartialOrd)]
 pub enum Number {

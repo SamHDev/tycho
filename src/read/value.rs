@@ -1,12 +1,14 @@
-use crate::{Value};
 use std::io::Read;
-use crate::read::func::{read_byte, read_bytes};
-use crate::read::number::{read_number_ident, read_number};
-use crate::read::string::{read_string, read_char};
-use crate::read::length::read_length;
+
 use uuid::Uuid;
+
+use crate::Value;
+use crate::error::{TychoError, TychoResult};
 use crate::ident::ValueIdent;
-use crate::error::{TychoResult, TychoError};
+use crate::read::func::{read_byte, read_bytes};
+use crate::read::length::read_length;
+use crate::read::number::{read_number, read_number_ident};
+use crate::read::string::{read_char, read_string};
 
 pub(crate) fn read_value_ident<R: Read>(reader: &mut R) -> TychoResult<ValueIdent> {
     let byte = read_byte(reader)?;

@@ -1,11 +1,10 @@
-use crate::read::length::read_length;
-use crate::read::func::{read_bytes, read_byte};
-use crate::error::{TychoResult, TychoError};
 use tokio::io::AsyncRead;
+
+use crate::error::{TychoError, TychoResult};
 use crate::read::async_tokio::func::{read_byte_async, read_bytes_async};
 use crate::read::async_tokio::length::read_length_async;
 
-pub(crate) fn read_string_async<R: AsyncRead>(reader: &mut R) -> TychoResult<String> {
+pub(crate) async fn read_string_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<String> {
     let length = read_length_async(reader).await?;
     match String::from_utf8(read_bytes_async(reader, length).await?) {
         Ok(s) => Ok(s),
@@ -13,7 +12,7 @@ pub(crate) fn read_string_async<R: AsyncRead>(reader: &mut R) -> TychoResult<Str
     }
 }
 
-pub(crate) fn read_tstring_async<R: AsyncRead>(reader: &mut R) -> TychoResult<String> {
+pub(crate) async fn read_tstring_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<String> {
     let mut buffer = Vec::new();
     loop {
         let byte = read_byte_async(reader).await?;
@@ -28,7 +27,7 @@ pub(crate) fn read_tstring_async<R: AsyncRead>(reader: &mut R) -> TychoResult<St
     }
 }
 
-pub(crate) fn read_char_async<R: AsyncRead>(reader: &mut R) -> TychoResult<char> {
+pub(crate) async fn read_char_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<char> {
     let mut buffer = Vec::new();
 
     let byte = read_byte_async(reader).await?;

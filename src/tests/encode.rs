@@ -1,5 +1,6 @@
-use crate::{marshall_vec};
 use std::str::FromStr;
+
+use crate::marshall_vec;
 
 #[test]
 fn encode_bool_false() {

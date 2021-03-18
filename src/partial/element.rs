@@ -1,14 +1,15 @@
-use std::io::{Seek, Read};
-use crate::partial::types::PartialStruct;
-use crate::Value;
-use crate::partial::reader::PartialReader;
+use std::io::{Read, Seek};
+
 use crate::error::TychoResult;
-use crate::types::ident::{ElementIdent, ValueIdent};
-use crate::read::value::{read_value_ident, read_value};
+use crate::partial::{PartialArray, PartialList, PartialMap};
+use crate::partial::reader::PartialReader;
+use crate::partial::types::PartialStruct;
 use crate::read::element::read_element_ident;
 use crate::read::length::read_length;
 use crate::read::string::read_tstring;
-use crate::partial::{PartialArray, PartialList, PartialMap};
+use crate::read::value::{read_value, read_value_ident};
+use crate::types::ident::{ElementIdent, ValueIdent};
+use crate::Value;
 
 #[derive(Debug, Clone)]
 pub enum PartialElement {

@@ -1,11 +1,12 @@
 use std::io::Write;
-use crate::{Value};
-use crate::write::func::{write_byte, write_bytes};
-use crate::write::number::{write_number_ident, write_number};
-use crate::write::string::{write_string, write_char};
-use crate::write::length::write_length;
-use crate::types::ident::ValueIdent;
+
+use crate::Value;
 use crate::error::TychoStatus;
+use crate::types::ident::ValueIdent;
+use crate::write::func::{write_byte, write_bytes};
+use crate::write::length::write_length;
+use crate::write::number::{write_number, write_number_ident};
+use crate::write::string::{write_char, write_string};
 
 pub(crate) fn write_value_ident<W: Write>(writer: &mut W, ident: &ValueIdent) -> TychoStatus {
     match ident {

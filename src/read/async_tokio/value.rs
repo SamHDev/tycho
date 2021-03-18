@@ -1,16 +1,15 @@
-use crate::{Value};
-use std::io::Read;
-use uuid::Uuid;
-use crate::ident::ValueIdent;
-use crate::error::{TychoResult, TychoError};
-use crate::read::async_tokio::func::{read_byte_async, read_bytes_async};
 use tokio::io::AsyncRead;
-use crate::read::async_tokio::number::{read_number_ident_async, read_number_async};
-use crate::read::async_tokio::string::{read_string_async, read_char_async};
-use crate::read::length::read_length;
-use crate::read::async_tokio::length::read_length_async;
+use uuid::Uuid;
 
-pub(crate) fn read_value_ident_async<R: AsyncRead>(reader: &mut R) -> TychoResult<ValueIdent> {
+use crate::error::{TychoError, TychoResult};
+use crate::ident::ValueIdent;
+use crate::read::async_tokio::func::{read_byte_async, read_bytes_async};
+use crate::read::async_tokio::length::read_length_async;
+use crate::read::async_tokio::number::{read_number_async, read_number_ident_async};
+use crate::read::async_tokio::string::{read_char_async, read_string_async};
+use crate::Value;
+
+pub(crate) async fn read_value_ident_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<ValueIdent> {
     let byte = read_byte_async(reader).await?;
 
     match byte {
@@ -26,7 +25,7 @@ pub(crate) fn read_value_ident_async<R: AsyncRead>(reader: &mut R) -> TychoResul
     }
 }
 
-pub(crate) fn read_value_async<R: Read>(reader: &mut R, ident: &ValueIdent) -> TychoResult<Value> {
+pub(crate) async fn read_value_async<R: AsyncRead + Unpin>(reader: &mut R, ident: &ValueIdent) -> TychoResult<Value> {
     match ident {
         ValueIdent::Null => Ok(Value::Null),
         ValueIdent::Boolean => Ok(Value::Boolean(read_byte_async(reader).await? == 0x01)),

@@ -1,7 +1,8 @@
 use std::collections::HashMap;
-use crate::Element;
-use std::ops::{DerefMut, Deref};
 use std::convert::TryFrom;
+use std::ops::{Deref, DerefMut};
+
+use crate::Element;
 
 /// Maps to `HashMap<String, Element>`
 #[derive(Debug)]

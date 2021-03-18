@@ -1,5 +1,6 @@
-use crate::Element;
 use std::ops::{Deref, DerefMut};
+
+use crate::Element;
 
 /// Maps to `Vec<Element>` where items are heterogeneous
 #[derive(Debug)]

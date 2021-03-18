@@ -1,6 +1,7 @@
-use crate::write::length::write_length;
-use crate::read::length::read_length;
 use std::io::{BufWriter, Cursor};
+
+use crate::read::length::read_length;
+use crate::write::length::write_length;
 
 fn encode_var_length(length: usize) -> Vec<u8> {
     let mut buffer = BufWriter::new(Vec::new());

@@ -1,10 +1,11 @@
 use std::io::Read;
-use crate::{Number};
-use crate::read::func::read_byte;
-use byteorder::{ReadBytesExt, BE};
-use crate::types::ident::NumberIdent;
-use crate::error::{TychoResult, parse_io, TychoError};
 
+use byteorder::{BE, ReadBytesExt};
+
+use crate::Number;
+use crate::error::{parse_io, TychoError, TychoResult};
+use crate::read::func::read_byte;
+use crate::types::ident::NumberIdent;
 
 pub(crate) fn read_number_ident<R: Read>(reader: &mut R) -> TychoResult<NumberIdent> {
     parse_number_ident(read_byte(reader)?)

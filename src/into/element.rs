@@ -1,5 +1,4 @@
-use crate::{Value, Element, Number};
-
+use crate::{Element, Number, Value};
 
 impl From<Value> for Element {
     fn from(v: Value) -> Self {

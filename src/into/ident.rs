@@ -1,5 +1,5 @@
-use crate::{Element, Value, Number};
-use crate::types::ident::{ElementIdent, ValueIdent, NumberIdent};
+use crate::{Element, Number, Value};
+use crate::types::ident::{ElementIdent, NumberIdent, ValueIdent};
 
 pub trait Ident {
     type IdentType;

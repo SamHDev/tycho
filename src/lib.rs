@@ -1,3 +1,7 @@
+pub use public::*;
+pub use types::ident;
+pub use types::types::*;
+
 pub(crate) mod types;
 
 pub(crate) mod write;
@@ -11,10 +15,6 @@ pub mod partial;
 
 pub mod collections;
 pub mod error;
-
-pub use types::ident;
-pub use types::types::*;
-pub use public::*;
 
 #[cfg(test)]
 mod tests;

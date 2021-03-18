@@ -1,5 +1,6 @@
 use std::fmt;
-use crate::{Number, Value, Element};
+
+use crate::{Element, Number, Value};
 
 impl fmt::Display for Number {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

@@ -1,11 +1,12 @@
-use crate::partial::container::{PartialContainerType, PartialContainer};
-use crate::partial::element::PartialElement;
-use crate::error::TychoResult;
-use crate::partial::reader::PartialReader;
 use std::io::{Read, Seek};
+
+use crate::error::TychoResult;
+use crate::partial::container::{PartialContainer, PartialContainerType};
+use crate::partial::element::PartialElement;
+use crate::partial::reader::PartialReader;
 use crate::read::string::read_tstring;
-use crate::types::ident::ValueIdent;
 use crate::read::value::read_value;
+use crate::types::ident::ValueIdent;
 use crate::Value;
 
 #[derive(Debug, Clone)]

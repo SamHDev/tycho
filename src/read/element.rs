@@ -1,15 +1,16 @@
-use std::io::{Read, Cursor};
-use crate::read::func::{read_byte, read_bytes};
-use crate::read::value::{read_value, read_value_ident};
-use crate::read::string::read_tstring;
-use crate::read::length::read_length;
 use std::collections::HashMap;
-use crate::types::ident::{ElementIdent, ValueIdent};
-use crate::error::{TychoResult, TychoError};
+use std::io::{Cursor, Read};
+
 use crate::Element;
+use crate::error::{TychoError, TychoResult};
+use crate::read::func::{read_byte, read_bytes};
+use crate::read::length::read_length;
+use crate::read::string::read_tstring;
+use crate::read::value::{read_value, read_value_ident};
+use crate::types::ident::{ElementIdent, ValueIdent};
 
 pub(crate) fn read_element_ident<R: Read>(reader: &mut R) -> TychoResult<ElementIdent> {
-     parse_element_ident(read_byte(reader).await?)
+     parse_element_ident(read_byte(reader)?)
 }
 
 pub(crate) fn parse_element_ident(byte: u8) -> TychoResult<ElementIdent> {

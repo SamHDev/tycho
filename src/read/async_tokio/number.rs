@@ -1,19 +1,20 @@
-use tokio::io::{AsyncRead};
-use crate::error::{TychoResult, parse_io};
-use crate::types::ident::NumberIdent;
-use crate::read::number::parse_number_ident;
-use crate::read::async_tokio::func::read_byte_async;
-use crate::Number;
-use tokio_byteorder::AsyncReadBytesExt;
 use byteorder::BE;
+use tokio::io::AsyncRead;
+use tokio_byteorder::AsyncReadBytesExt;
 
-pub(crate) fn read_number_ident_async<R: AsyncRead>(reader: &mut R) -> TychoResult<NumberIdent> {
+use crate::error::{parse_io, TychoResult};
+use crate::Number;
+use crate::read::async_tokio::func::read_byte_async;
+use crate::read::number::parse_number_ident;
+use crate::types::ident::NumberIdent;
+
+pub(crate) async fn read_number_ident_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<NumberIdent> {
     parse_number_ident(read_byte_async(reader).await?)
 }
 
-pub(crate) fn read_number_async<R: AsyncRead>(reader: &mut R, ident: &NumberIdent) -> TychoResult<Number> {
+pub(crate) async fn read_number_async<R: AsyncRead + Unpin>(reader: &mut R, ident: &NumberIdent) -> TychoResult<Number> {
     match ident {
-        NumberIdent::Bit => Ok(Number::Bit(read_byte_async(reader)? == 0x00)),
+        NumberIdent::Bit => Ok(Number::Bit(read_byte_async(reader).await? == 0x00)),
         NumberIdent::Unsigned8 => Ok(Number::Unsigned8(parse_io(reader.read_u8().await)?)),
         NumberIdent::Signed8 => Ok(Number::Signed8(parse_io(reader.read_i8().await)?)),
         NumberIdent::Unsigned16 => Ok(Number::Unsigned16(parse_io(reader.read_u16::<BE>().await)?)),

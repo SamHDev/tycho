@@ -1,5 +1,6 @@
 use std::hash::{Hash, Hasher};
-use crate::{Value, Number};
+
+use crate::{Number, Value};
 
 impl Hash for Value {
     fn hash<H: Hasher>(&self, state: &mut H) {

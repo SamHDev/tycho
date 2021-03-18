@@ -1,8 +1,9 @@
-use crate::into::value::ValueType;
 use std::collections::HashMap;
 use std::hash::Hash;
-use crate::Element;
 use std::ops::{Deref, DerefMut};
+
+use crate::Element;
+use crate::into::value::ValueType;
 
 /// Maps to `HashMap<Value, Element>` where value is homogeneous
 #[derive(Debug)]

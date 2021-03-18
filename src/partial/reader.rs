@@ -1,10 +1,10 @@
-use std::io::{Read, Seek, SeekFrom, Cursor, Result as IoResult};
-use crate::partial::element::PartialElement;
-use crate::error::{TychoResult, TychoStatus, parse_io};
+use std::io::{Cursor, Read, Result as IoResult, Seek, SeekFrom};
 
 #[cfg(feature="partial_state")]
 use rand;
 
+use crate::error::{parse_io, TychoResult, TychoStatus};
+use crate::partial::element::PartialElement;
 
 pub struct PartialReader<R: Read + Seek> {
     pub(crate) reader: R,

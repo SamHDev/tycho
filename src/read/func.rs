@@ -1,6 +1,8 @@
 use std::io::Read;
+
 use byteorder::ReadBytesExt;
-use crate::error::{TychoResult, parse_io};
+
+use crate::error::{parse_io, TychoResult};
 
 pub(crate) fn read_byte<R: Read>(reader: &mut R) -> TychoResult<u8> {
     parse_io(reader.read_u8())

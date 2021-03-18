@@ -1,4 +1,4 @@
-use crate::{Number, Value, Element};
+use crate::{Element, Number, Value};
 
 macro_rules! number_from {
     ($id: ident, $type: ty) => {
