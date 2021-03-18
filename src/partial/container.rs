@@ -1,4 +1,4 @@
-use std::io::{Read, Seek, Write, SeekFrom};
+use std::io::{Read, Seek};
 use crate::partial::reader::{PartialReader, PartialPointer};
 use crate::error::{TychoResult, TychoError};
 use std::marker::PhantomData;
@@ -6,10 +6,10 @@ use std::marker::PhantomData;
 pub trait PartialContainerType {
     type ItemType;
     type ItemParam;
-    type ItemStandard;
+    //type ItemStandard;
 
     fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>, param: &Self::ItemParam) -> TychoResult<Self::ItemType>;
-    fn standardise(items: Vec<T::ItemType>) -> TychoResult<Self::ItemStandard>;
+    //fn standardise(items: Vec<T::ItemType>) -> TychoResult<Self::ItemStandard>;
 }
 
 #[derive(Debug, Clone)]

@@ -7,8 +7,10 @@ use crate::error::{TychoResult, parse_io, TychoError};
 
 
 pub(crate) fn read_number_ident<R: Read>(reader: &mut R) -> TychoResult<NumberIdent> {
-    let byte = read_byte(reader)?;
-    
+    parse_number_ident(read_byte(reader)?)
+}
+
+pub(crate) fn parse_number_ident(byte: u8) -> TychoResult<NumberIdent> {
     match byte {
         0x00 => Ok(NumberIdent::Bit),
         0x01 => Ok(NumberIdent::Unsigned8),

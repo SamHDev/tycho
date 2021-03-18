@@ -1,15 +1,15 @@
-use std::io::Read;
+use tokio::io::AsyncRead;
 use byteorder::ReadBytesExt;
 use crate::error::{TychoResult, parse_io};
 
-pub(crate) fn read_byte<R: Read>(reader: &mut R) -> TychoResult<u8> {
-    parse_io(reader.read_u8())
+pub(crate) async fn read_byte_async<R: AsyncRead>(reader: &mut R) -> TychoResult<u8> {
+    parse_io(reader.read_u8().await)
 }
 
-pub(crate) fn read_bytes<R: Read>(reader: &mut R, size: usize) -> TychoResult<Vec<u8>> {
+pub(crate) async fn read_bytes_async<R: AsyncRead>(reader: &mut R, size: usize) -> TychoResult<Vec<u8>> {
     let mut buffer = Vec::with_capacity(size);
     for _ in 0..size {
-        buffer.push(read_byte(reader)?);
+        buffer.push(read_byte_async(reader).await?);
     }
     Ok(buffer)
 }

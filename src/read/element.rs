@@ -9,8 +9,10 @@ use crate::error::{TychoResult, TychoError};
 use crate::Element;
 
 pub(crate) fn read_element_ident<R: Read>(reader: &mut R) -> TychoResult<ElementIdent> {
-    let byte = read_byte(reader)?;
+     parse_element_ident(read_byte(reader).await?)
+}
 
+pub(crate) fn parse_element_ident(byte: u8) -> TychoResult<ElementIdent> {
     match byte {
         0x00 => Ok(ElementIdent::Unit),
         0x01 => Ok(ElementIdent::Value),
