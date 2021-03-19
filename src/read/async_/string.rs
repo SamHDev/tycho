@@ -1,8 +1,8 @@
 use tokio::io::AsyncRead;
 
 use crate::error::{TychoError, TychoResult};
-use crate::read::async_tokio::func::{read_byte_async, read_bytes_async};
-use crate::read::async_tokio::length::read_length_async;
+use crate::read::async_::func::{read_byte_async, read_bytes_async};
+use crate::read::async_::length::read_length_async;
 
 pub(crate) async fn read_string_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<String> {
     let length = read_length_async(reader).await?;

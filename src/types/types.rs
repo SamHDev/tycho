@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::types::ident::ValueIdent;
 
-#[derive(Debug, Clone, PartialOrd)]
+#[derive(Debug, Clone, PartialOrd, )]
 pub enum Number {
     Bit(bool),
     Unsigned8(u8),

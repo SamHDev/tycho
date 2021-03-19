@@ -6,10 +6,10 @@ use tokio::io::AsyncRead;
 
 use crate::Element;
 use crate::error::TychoResult;
-use crate::read::async_tokio::func::{read_byte_async, read_bytes_async};
-use crate::read::async_tokio::length::read_length_async;
-use crate::read::async_tokio::string::read_tstring_async;
-use crate::read::async_tokio::value::{read_value_async, read_value_ident_async};
+use crate::read::async_::func::{read_byte_async, read_bytes_async};
+use crate::read::async_::length::read_length_async;
+use crate::read::async_::string::read_tstring_async;
+use crate::read::async_::value::{read_value_async, read_value_ident_async};
 use crate::read::element::parse_element_ident;
 use crate::types::ident::{ElementIdent, ValueIdent};
 

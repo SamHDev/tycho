@@ -13,6 +13,9 @@ pub(crate) mod public;
 #[cfg(feature="partial")]
 pub mod partial;
 
+#[cfg(feature="serde_support")]
+mod serde;
+
 pub mod collections;
 pub mod error;
 

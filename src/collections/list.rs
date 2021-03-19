@@ -1,6 +1,7 @@
 use std::ops::{Deref, DerefMut};
 
 use crate::Element;
+use std::convert::TryFrom;
 
 /// Maps to `Vec<Element>` where items are heterogeneous
 #[derive(Debug)]
@@ -32,5 +33,18 @@ impl List {
 impl From<Vec<Element>> for List {
     fn from(v: Vec<Element>) -> Self {
         Self(v)
+    }
+}
+
+
+impl TryFrom<Element> for List {
+    type Error = ();
+
+    fn try_from(value: Element) -> Result<Self, Self::Error> {
+        if let Element::List(set) = value {
+            Ok(List(set))
+        } else {
+            Err(())
+        }
     }
 }

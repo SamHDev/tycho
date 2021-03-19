@@ -42,7 +42,7 @@ mod async_tokio_public {
 
     use crate::Element;
     use crate::error::TychoResult;
-    use crate::read::async_tokio::element::read_element_async;
+    use crate::read::async_::element::read_element_async;
 
     /// Unmarshall an element from a async readable object.
     pub async fn unmarshall_async<R: AsyncRead + Unpin + Send>(reader: &mut R) -> TychoResult<Element> {

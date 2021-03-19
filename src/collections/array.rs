@@ -1,7 +1,8 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::Element;
+use crate::{Element, Value};
 use crate::into::value::ValueType;
+use std::convert::TryFrom;
 
 /// Maps to `Vec<Value>` where items are homogeneous
 #[derive(Debug)]
@@ -33,5 +34,24 @@ impl<T: ValueType> Array<T> {
 impl<T: ValueType> From<Vec<T>> for Array<T> {
     fn from(v: Vec<T>) -> Self {
         Self(v)
+    }
+}
+
+impl<K: ValueType + TryFrom<Value>> TryFrom<Element> for Array<K> {
+    type Error = ();
+
+    fn try_from(value: Element) -> Result<Self, Self::Error> {
+        if let Element::Array(ident, set) = value {
+            if K::IDENT == ident {
+                Ok(Array(set.into_iter()
+                    .filter_map(|x| K::try_from(x).ok() )
+                    .collect()
+                ))
+            } else {
+                Err(())
+            }
+        } else {
+            Err(())
+        }
     }
 }

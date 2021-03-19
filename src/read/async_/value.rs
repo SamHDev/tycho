@@ -3,10 +3,10 @@ use uuid::Uuid;
 
 use crate::error::{TychoError, TychoResult};
 use crate::ident::ValueIdent;
-use crate::read::async_tokio::func::{read_byte_async, read_bytes_async};
-use crate::read::async_tokio::length::read_length_async;
-use crate::read::async_tokio::number::{read_number_async, read_number_ident_async};
-use crate::read::async_tokio::string::{read_char_async, read_string_async};
+use crate::read::async_::func::{read_byte_async, read_bytes_async};
+use crate::read::async_::length::read_length_async;
+use crate::read::async_::number::{read_number_async, read_number_ident_async};
+use crate::read::async_::string::{read_char_async, read_string_async};
 use crate::Value;
 
 pub(crate) async fn read_value_ident_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<ValueIdent> {

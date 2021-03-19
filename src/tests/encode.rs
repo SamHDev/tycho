@@ -51,5 +51,5 @@ fn encode_bytes() {
     assert_eq!(
         marshall_vec(vec![10_u8, 20_u8, 30_u8, 40_u8, 50_u8]).unwrap(),
         vec![1, 5, 5, 10, 20, 30, 40, 50]);
-
 }
+

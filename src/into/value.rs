@@ -3,7 +3,6 @@ use crate::types::ident::{NumberIdent, ValueIdent};
 
 pub trait ValueType: Into<Value> {
     const IDENT: ValueIdent;
-
 }
 
 macro_rules! impl_value_type {

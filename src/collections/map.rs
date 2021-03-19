@@ -2,8 +2,9 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::ops::{Deref, DerefMut};
 
-use crate::Element;
+use crate::{Element, Value};
 use crate::into::value::ValueType;
+use std::convert::TryFrom;
 
 /// Maps to `HashMap<Value, Element>` where value is homogeneous
 #[derive(Debug)]
@@ -34,5 +35,24 @@ impl<T: ValueType + Hash + Eq> Map<T> {
 impl<T: ValueType + Hash + Eq> From<HashMap<T, Element>> for Map<T> {
     fn from(v: HashMap<T, Element>) -> Self {
         Self(v)
+    }
+}
+
+impl<K: ValueType + Hash + Eq + TryFrom<Value>> TryFrom<Element> for Map<K> {
+    type Error = ();
+
+    fn try_from(value: Element) -> Result<Self, Self::Error> {
+        if let Element::Map(ident, map) = value {
+            if K::IDENT == ident {
+                Ok(Map(map.into_iter()
+                    .filter_map(|(k, v)|
+                        Some((K::try_from(k).ok()?, v)))
+                    .collect()))
+            } else {
+                Err(())
+            }
+        } else {
+            Err(())
+        }
     }
 }

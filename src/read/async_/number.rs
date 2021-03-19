@@ -4,7 +4,7 @@ use tokio_byteorder::AsyncReadBytesExt;
 
 use crate::error::{parse_io, TychoResult};
 use crate::Number;
-use crate::read::async_tokio::func::read_byte_async;
+use crate::read::async_::func::read_byte_async;
 use crate::read::number::parse_number_ident;
 use crate::types::ident::NumberIdent;
 

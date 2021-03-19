@@ -55,3 +55,15 @@ impl From<HashMap<String, Element>> for Struct {
         Self(v)
     }
 }
+
+impl TryFrom<Element> for Struct {
+    type Error = ();
+
+    fn try_from(value: Element) -> Result<Self, Self::Error> {
+        if let Element::Struct(map) = value {
+            Ok(Struct(map))
+        } else {
+            Err(())
+        }
+    }
+}
