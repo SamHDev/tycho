@@ -3,13 +3,14 @@ use crate::{Element, Number};
 use crate::error::TychoError;
 use crate::Value;
 use paste;
-use crate::serde::ser::seq::SeqSerializer;
+use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};
+use crate::serde::ser::variant::VariantSeqSerializer;
 
 
 macro_rules! serialize_number {
     ($ident: ident, $type: ty) => {
         paste::item! {
-            fn [<  serialize_ $type >](self, v: $type) {
+            fn [< serialize_ $type >](self, v: $type) {
                 Ok(Element::Value(Value::Number(Number::$ident(v))))
             }
 
@@ -24,8 +25,8 @@ impl Serializer for TychoSerializer {
     type Error = TychoError;
     type SerializeSeq = SeqSerializer;
     type SerializeTuple = SeqSerializer;
-    type SerializeTupleStruct = ();
-    type SerializeTupleVariant = ();
+    type SerializeTupleStruct = SeqSerializer;
+    type SerializeTupleVariant = VariantSeqSerializer;
     type SerializeMap = ();
     type SerializeStruct = ();
     type SerializeStructVariant = ();

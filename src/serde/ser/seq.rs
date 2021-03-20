@@ -79,6 +79,7 @@ impl SeqSerializer {
                     .into_iter()
                     .filter_map(|x|
                         if let Element::Value(v) = x { Some(v) } else { None })
+                    .filter(|x| x.ident() == ident)
                     .collect()))
             },
             SeqSerializerType::List => {
