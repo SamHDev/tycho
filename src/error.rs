@@ -17,7 +17,10 @@ pub enum TychoError {
     #[cfg(feature="serde_support")]
     InvalidKeyType { found: ElementIdent },
     #[cfg(feature="serde_support")]
-    MismatchedType { found: ValueIdent, expected: ValueIdent }
+    MismatchedType { found: ValueIdent, expected: ValueIdent },
+
+    #[cfg(feature="serde_support")]
+    ExpectedType { found: String, expected: String }
 }
 
 impl From<std::io::Error> for TychoError {
