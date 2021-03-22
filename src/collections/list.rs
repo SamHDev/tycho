@@ -1,7 +1,7 @@
+use std::convert::TryFrom;
 use std::ops::{Deref, DerefMut};
 
 use crate::Element;
-use std::convert::TryFrom;
 
 /// Maps to `Vec<Element>` where items are heterogeneous
 #[derive(Debug)]

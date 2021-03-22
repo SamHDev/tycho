@@ -1,11 +1,13 @@
 use std::collections::HashMap;
-use crate::{Value, Element};
-use serde::ser::{SerializeMap, Error};
-use crate::error::TychoError;
+
+use serde::ser::{Error, SerializeMap};
 use serde::Serialize;
-use crate::serde::ser::TychoSerializer;
-use crate::into::ident::Ident;
+
+use crate::{Element, Value};
+use crate::error::TychoError;
 use crate::ident::ValueIdent;
+use crate::into::ident::Ident;
+use crate::serde::ser::TychoSerializer;
 
 pub struct MapSerializer {
     content: HashMap<Value, Element>,
@@ -51,9 +53,9 @@ impl SerializeMap for MapSerializer {
         let value = value.serialize(TychoSerializer)?;
         let key = std::mem::replace(&mut self.key, None);
         if let Some(k) = key {
-            self.content.insert(k, value)
+            self.content.insert(k, value);
         } else {
-            Err(TychoError::custom("Invalid key state."))
+            return Err(TychoError::custom("Invalid key state."));
         }
         Ok(())
     }

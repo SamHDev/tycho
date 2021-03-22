@@ -1,8 +1,8 @@
+use std::convert::TryFrom;
 use std::ops::{Deref, DerefMut};
 
 use crate::{Element, Value};
 use crate::into::value::ValueType;
-use std::convert::TryFrom;
 
 /// Maps to `Vec<Value>` where items are homogeneous
 #[derive(Debug)]

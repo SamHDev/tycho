@@ -1,8 +1,8 @@
 use std::io::Write;
 
-use crate::Value;
 use crate::error::TychoStatus;
 use crate::types::ident::ValueIdent;
+use crate::Value;
 use crate::write::func::{write_byte, write_bytes};
 use crate::write::length::write_length;
 use crate::write::number::{write_number, write_number_ident};

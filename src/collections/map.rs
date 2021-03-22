@@ -1,10 +1,10 @@
 use std::collections::HashMap;
+use std::convert::TryFrom;
 use std::hash::Hash;
 use std::ops::{Deref, DerefMut};
 
 use crate::{Element, Value};
 use crate::into::value::ValueType;
-use std::convert::TryFrom;
 
 /// Maps to `HashMap<Value, Element>` where value is homogeneous
 #[derive(Debug)]

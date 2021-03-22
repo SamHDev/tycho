@@ -1,5 +1,4 @@
-use crate::{Element, Value, Number, marshall_vec, unmarshall_vec};
-
+use crate::{Element, marshall_vec, Number, unmarshall_vec, Value};
 
 macro_rules! number_test {
     ($name: expr, $ident: ident, $test: expr, $bytes: expr) => {

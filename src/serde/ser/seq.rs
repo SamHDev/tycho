@@ -1,11 +1,14 @@
-use serde::ser::{SerializeSeq, SerializeTuple, SerializeTupleStruct, SerializeTupleVariant};
-use crate::{Element, Value};
+use serde::ser::{SerializeSeq, SerializeTuple, SerializeTupleStruct};
 use serde::Serialize;
+
+use crate::{Element};
 use crate::error::TychoError;
 use crate::ident::ValueIdent;
-use crate::serde::ser::TychoSerializer;
 use crate::into::ident::Ident;
+use crate::serde::ser::TychoSerializer;
 
+#[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
 pub enum SeqSerializerType {
     Array(ValueIdent),
     List,
@@ -34,11 +37,11 @@ impl SeqSerializer {
         let value = value.serialize(TychoSerializer)?;
 
         #[cfg(feature = "serde_optimise")]
-        if self.array_opt && self.array_type == SeqSerializerType::Default {
+        if self.array_opt && self.seq_type == SeqSerializerType::Default {
             if let Element::Value(x) = &value {
-                if self.array_type = ValueIdent::Null {
+                if self.array_type == ValueIdent::Null {
                     self.array_type = x.ident();
-                } else if &x.ident() != self.array_type {
+                } else if x.ident() != self.array_type {
                     self.array_opt = false;
                 }
             } else {
@@ -50,7 +53,7 @@ impl SeqSerializer {
         Ok(())
     }
 
-    pub fn end(self) -> Result<Element, TychoError> {
+    pub fn finish(self) -> Result<Element, TychoError> {
         match self.seq_type {
             SeqSerializerType::Default => {
                 if self.elements.is_empty() {
@@ -75,11 +78,11 @@ impl SeqSerializer {
                 }
             }
             SeqSerializerType::Array(ident) => {
-                Ok(Element::Array(ident,  self.elements
+                Ok(Element::Array(ident.clone(),  self.elements
                     .into_iter()
                     .filter_map(|x|
                         if let Element::Value(v) = x { Some(v) } else { None })
-                    .filter(|x| x.ident() == ident)
+                    .filter(|x| &x.ident() == &ident)
                     .collect()))
             },
             SeqSerializerType::List => {

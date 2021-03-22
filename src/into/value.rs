@@ -1,5 +1,5 @@
-use crate::Value;
 use crate::types::ident::{NumberIdent, ValueIdent};
+use crate::Value;
 
 pub trait ValueType: Into<Value> {
     const IDENT: ValueIdent;

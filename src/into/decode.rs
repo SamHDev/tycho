@@ -1,5 +1,6 @@
-use crate::{Element, Number, Value};
 use std::convert::TryFrom;
+
+use crate::{Element, Number, Value};
 
 macro_rules! number_to {
     ($id: ident, $type: ty) => {

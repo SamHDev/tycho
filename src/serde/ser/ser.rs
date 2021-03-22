@@ -1,16 +1,18 @@
-use serde::{Serializer, Serialize};
+use paste;
+use serde::{Serialize, Serializer};
+
 use crate::{Element, Number};
 use crate::error::TychoError;
-use crate::Value;
-use paste;
+use crate::serde::ser::map::MapSerializer;
 use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};
-use crate::serde::ser::variant::VariantSeqSerializer;
-
+use crate::serde::ser::struct_::StructSerializer;
+use crate::serde::ser::variant::{VariantSeqSerializer, VariantStructSerializer};
+use crate::Value;
 
 macro_rules! serialize_number {
     ($ident: ident, $type: ty) => {
         paste::item! {
-            fn [< serialize_ $type >](self, v: $type) {
+            fn [< serialize_ $type >](self, v: $type) -> Result<Self::Ok, Self::Error> {
                 Ok(Element::Value(Value::Number(Number::$ident(v))))
             }
 
@@ -27,9 +29,9 @@ impl Serializer for TychoSerializer {
     type SerializeTuple = SeqSerializer;
     type SerializeTupleStruct = SeqSerializer;
     type SerializeTupleVariant = VariantSeqSerializer;
-    type SerializeMap = ();
-    type SerializeStruct = ();
-    type SerializeStructVariant = ();
+    type SerializeMap = MapSerializer;
+    type SerializeStruct = StructSerializer;
+    type SerializeStructVariant = VariantStructSerializer;
 
     fn serialize_bool(self, v: bool) -> Result<Self::Ok, Self::Error> {
         Ok(Element::Value(Value::Boolean(v)))
@@ -67,7 +69,7 @@ impl Serializer for TychoSerializer {
 
     fn serialize_some<T: ?Sized>(self, value: &T) -> Result<Self::Ok, Self::Error> where
         T: Serialize {
-        Ok(Element::Option(Some(value.serialize(value)?)))
+        Ok(Element::Option(Some(Box::new(value.serialize(Self)?))))
     }
 
     fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
@@ -84,39 +86,39 @@ impl Serializer for TychoSerializer {
 
     fn serialize_newtype_struct<T: ?Sized>(self, _name: &'static str, value: &T) -> Result<Self::Ok, Self::Error> where
         T: Serialize {
-        Ok(value.serialize()?)
+        Ok(value.serialize(Self)?)
     }
 
     fn serialize_newtype_variant<T: ?Sized>(self, _name: &'static str, _variant_index: u32, variant: &'static str, value: &T) -> Result<Self::Ok, Self::Error> where
         T: Serialize {
-        Ok(Element::Variant(variant.to_string(), value.serialize()?))
+        Ok(Element::Variant(variant.to_string(), Box::new(value.serialize(Self)?)))
     }
 
-    fn serialize_seq(self, len: Option<usize>) -> Result<Self::SerializeSeq, Self::Error> {
-        self.serialize_seq()
+    fn serialize_seq(self, _len: Option<usize>) -> Result<Self::SerializeSeq, Self::Error> {
+        Ok(Self::SerializeSeq::new(SeqSerializerType::Default))
     }
 
-    fn serialize_tuple(self, len: usize) -> Result<Self::SerializeTuple, Self::Error> {
+    fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple, Self::Error> {
         unimplemented!()
     }
 
-    fn serialize_tuple_struct(self, name: &'static str, len: usize) -> Result<Self::SerializeTupleStruct, Self::Error> {
-        unimplemented!()
+    fn serialize_tuple_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeTupleStruct, Self::Error> {
+        Ok(Self::SerializeSeq::new(SeqSerializerType::Default))
     }
 
-    fn serialize_tuple_variant(self, name: &'static str, variant_index: u32, variant: &'static str, len: usize) -> Result<Self::SerializeTupleVariant, Self::Error> {
-        unimplemented!()
+    fn serialize_tuple_variant(self, _name: &'static str, _variant_index: u32, variant: &'static str, _len: usize) -> Result<Self::SerializeTupleVariant, Self::Error> {
+        Ok(Self::SerializeTupleVariant::new(variant, SeqSerializer::new(SeqSerializerType::Default)))
     }
 
-    fn serialize_map(self, len: Option<usize>) -> Result<Self::SerializeMap, Self::Error> {
-        unimplemented!()
+    fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap, Self::Error> {
+        Ok(Self::SerializeMap::new())
     }
 
-    fn serialize_struct(self, name: &'static str, len: usize) -> Result<Self::SerializeStruct, Self::Error> {
-        unimplemented!()
+    fn serialize_struct(self, name: &'static str, _len: usize) -> Result<Self::SerializeStruct, Self::Error> {
+        Ok(Self::SerializeStruct::new(name))
     }
 
-    fn serialize_struct_variant(self, name: &'static str, variant_index: u32, variant: &'static str, len: usize) -> Result<Self::SerializeStructVariant, Self::Error> {
-        unimplemented!()
+    fn serialize_struct_variant(self, name: &'static str, _variant_index: u32, variant: &'static str, _len: usize) -> Result<Self::SerializeStructVariant, Self::Error> {
+        Ok(Self::SerializeStructVariant::new(variant, StructSerializer::new(name)))
     }
 }

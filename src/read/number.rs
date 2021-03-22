@@ -2,8 +2,8 @@ use std::io::Read;
 
 use byteorder::{BE, ReadBytesExt};
 
-use crate::Number;
 use crate::error::{parse_io, TychoError, TychoResult};
+use crate::Number;
 use crate::read::func::read_byte;
 use crate::types::ident::NumberIdent;
 

@@ -1,13 +1,13 @@
 use std::collections::HashMap;
-use crate::{Value, Element};
-use serde::ser::{SerializeMap, Error, SerializeStruct, SerializeSeq};
-use crate::error::TychoError;
-use serde::Serialize;
-use crate::serde::ser::TychoSerializer;
-use crate::into::ident::Ident;
-use crate::ident::ValueIdent;
-use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};
 
+use serde::ser::{SerializeStruct};
+use serde::Serialize;
+
+use crate::{Element};
+use crate::error::TychoError;
+use crate::serde::ser::TychoSerializer;
+
+#[allow(dead_code)]
 pub struct StructSerializer {
     content: HashMap<String, Element>,
     name: String
@@ -34,8 +34,6 @@ impl SerializeStruct for StructSerializer {
 
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
-        match self.name.as_str() {
-            _ => Ok(Element::Struct(self.content))
-        }
+        Ok(Element::Struct(self.content))
     }
 }

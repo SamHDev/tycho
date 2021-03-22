@@ -2,8 +2,8 @@ use std::io::Write;
 
 use byteorder::{BE, WriteBytesExt};
 
-use crate::Number;
 use crate::error::{parse_io, TychoStatus};
+use crate::Number;
 use crate::types::ident::NumberIdent;
 use crate::write::func::write_byte;
 
