@@ -1,7 +1,7 @@
 use serde::ser::{SerializeSeq, SerializeTuple, SerializeTupleStruct};
 use serde::Serialize;
 
-use crate::{Element};
+use crate::Element;
 use crate::error::TychoError;
 use crate::ident::ValueIdent;
 use crate::into::ident::Ident;

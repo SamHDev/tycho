@@ -4,9 +4,9 @@ use std::io::{Cursor, Read, Result as IoResult, Seek, SeekFrom};
 use rand;
 
 use crate::error::{parse_io, TychoResult, TychoStatus};
-use crate::partial::element::PartialElement;
+use crate::partial::element::{PartialElement, read_partial_element};
 
-pub struct PartialReader<R: Read + Seek> {
+pub struct PartialReader<R> {
     pub(crate) reader: R,
     pub(crate) pointer: u64,
 
@@ -26,16 +26,9 @@ impl PartialReader<Cursor<Vec<u8>>> {
     }
 }
 
+// sync implementation
 impl<R: Read + Seek> PartialReader<R> {
-    pub fn from(reader: R) -> PartialReader<R> {
-        PartialReader {
-            reader,
-            pointer: 0,
 
-            #[cfg(feature="partial_state")]
-            ident: rand::random()
-        }
-    }
 
     pub fn jump(&mut self, to: &u64) -> TychoStatus {
         parse_io(self.reader.seek(SeekFrom::Current((*to as i64) - (self.pointer as i64))))?;
@@ -44,7 +37,19 @@ impl<R: Read + Seek> PartialReader<R> {
     }
 
     pub fn element(&mut self) -> TychoResult<PartialElement> {
-        PartialElement::read(self)
+        read_partial_element(self)
+    }
+}
+
+impl<R> PartialReader<R> {
+    pub fn from(reader: R) -> PartialReader<R> {
+        PartialReader {
+            reader,
+            pointer: 0,
+
+            #[cfg(feature = "partial_state")]
+            ident: rand::random()
+        }
     }
 
     pub(crate) fn pointer(&self, pos: u64, size: u64) -> PartialPointer {

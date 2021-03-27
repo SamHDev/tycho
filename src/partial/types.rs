@@ -2,7 +2,7 @@ use std::io::{Read, Seek};
 
 use crate::error::TychoResult;
 use crate::partial::container::{PartialContainer, PartialContainerType};
-use crate::partial::element::PartialElement;
+use crate::partial::element::{PartialElement, read_partial_element};
 use crate::partial::reader::PartialReader;
 use crate::read::string::read_tstring;
 use crate::read::value::read_value;
@@ -17,7 +17,7 @@ impl PartialContainerType for PartialStructInner {
 
     fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>, _: &()) -> TychoResult<Self::ItemType> {
         let key = read_tstring(reader)?;
-        let value = PartialElement::read(reader)?;
+        let value = read_partial_element(reader)?;
         Ok((key, value))
     }
 }
@@ -30,7 +30,7 @@ impl PartialContainerType for PartialListInner {
     type ItemParam = ();
 
     fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>, _: &()) -> TychoResult<Self::ItemType> {
-        PartialElement::read(reader)
+        read_partial_element(reader)
     }
 }
 pub type PartialList = PartialContainer<PartialListInner>;
@@ -43,7 +43,7 @@ impl PartialContainerType for PartialMapInner {
 
     fn read_item<R: Read + Seek>(reader: &mut PartialReader<R>, params: &ValueIdent) -> TychoResult<Self::ItemType> {
         let key = read_value(reader, &params)?;
-        let value = PartialElement::read(reader)?;
+        let value = read_partial_element(reader)?;
         Ok((key, value))
     }
 }

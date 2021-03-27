@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use serde::ser::{SerializeStruct};
+use serde::ser::SerializeStruct;
 use serde::Serialize;
 
-use crate::{Element};
+use crate::Element;
 use crate::error::TychoError;
 use crate::serde::ser::TychoSerializer;
 
