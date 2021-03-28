@@ -1,6 +1,7 @@
 use crate::types::ident::{NumberIdent, ValueIdent};
 use crate::Value;
 
+/// Identities for a value.
 pub trait ValueType: Into<Value> {
     const IDENT: ValueIdent;
 }

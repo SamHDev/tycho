@@ -29,9 +29,11 @@ impl<K: ValueType> DerefMut for Array<K> {
 }
 
 impl<T: ValueType> Array<T> {
+    /// Create a new empty array.
     pub fn new() -> Self { Self(Vec::new()) }
 }
 impl<T: ValueType> From<Vec<T>> for Array<T> {
+    /// Create a new array from an existing Vec.
     fn from(v: Vec<T>) -> Self {
         Self(v)
     }

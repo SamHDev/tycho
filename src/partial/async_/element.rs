@@ -2,8 +2,7 @@ use tokio::io::{AsyncRead, AsyncSeek};
 
 use crate::error::TychoResult;
 use crate::ident::ElementIdent;
-use crate::partial::{PartialElement, PartialMap, PartialReader, PartialStruct};
-use crate::partial::{PartialArray, PartialList};
+use crate::partial::{PartialElement, PartialReader};
 use crate::read::async_::element::read_element_ident_async;
 use crate::read::async_::length::read_length_async;
 use crate::read::async_::string::read_tstring_async;
@@ -11,6 +10,7 @@ use crate::read::async_::value::{read_value_async, read_value_ident_async};
 use crate::types::ident::ValueIdent;
 use futures::future::BoxFuture;
 use futures::FutureExt;
+use crate::partial::types::{PartialStruct, PartialList, PartialArray, PartialMap};
 
 pub fn read_partial_element_async<R: AsyncRead + AsyncSeek + Unpin + Send>(reader: &mut PartialReader<R>) -> BoxFuture<TychoResult<PartialElement>> {
     async move {

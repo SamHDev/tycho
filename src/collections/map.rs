@@ -30,6 +30,7 @@ impl<K: ValueType + Hash + Eq> DerefMut for Map<K> {
 }
 
 impl<T: ValueType + Hash + Eq> Map<T> {
+    /// Create a new empty map.
     pub fn new() -> Self { Self(HashMap::new()) }
 }
 impl<T: ValueType + Hash + Eq> From<HashMap<T, Element>> for Map<T> {

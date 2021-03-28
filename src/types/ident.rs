@@ -1,6 +1,8 @@
 //! Type prefixes/identities used within the marshall and unmarshall processes - Returned in errors.
 
 #[derive(Debug, Clone, PartialOrd, PartialEq)]
+#[doc(inline)]
+/// Identities for numerical values.
 pub enum NumberIdent {
     Bit,
     Unsigned8,
@@ -18,6 +20,8 @@ pub enum NumberIdent {
 }
 
 #[derive(Debug, Clone, PartialOrd, PartialEq)]
+#[doc(inline)]
+/// Identities for primitive values.
 pub enum ValueIdent {
     Null,
     Boolean,
@@ -29,6 +33,8 @@ pub enum ValueIdent {
 }
 
 #[derive(Debug, Clone, PartialOrd, PartialEq)]
+#[doc(inline)]
+/// Identities for elements.
 pub enum ElementIdent {
     Unit,
     Value,

@@ -29,20 +29,48 @@ impl DerefMut for Struct {
 }
 
 impl Struct {
+    /// Create a new empty struct.
     pub fn new() -> Self { Self(HashMap::new()) }
 
+    /// Insert an item into the struct.
+    ///
+    /// This function uses the `Into<Element>` trait.
+    /// ```
+    /// use tycho::collections::Struct;
+    /// use tycho::Element;
+    /// let mut s = Struct::new();
+    /// s.insert("a", "foo");
+    /// ```
     pub fn insert<V: Into<Element>>(&mut self, key: &str, value: V) -> Option<Element> {
         self.0.insert(key.to_string(), value.into())
     }
 
+    /// Get an item from the struct.
     pub fn get(&self, key: &str) -> Option<&Element> {
         self.0.get(key)
     }
 
+    /// Remove an item from the struct.
     pub fn remove(&mut self, key: &str) -> Option<Element> {
         self.0.remove(key)
     }
 
+    /// Get a value from a struct with a given type
+    ///
+    /// ```
+    /// use tycho::collections::Struct;
+    /// use tycho::{Element, Value, Number};
+    /// let mut s = Struct::new();
+    ///
+    /// // Insert
+    /// s.insert("foo", 420i32);
+    ///
+    /// // Retrieve
+    /// assert_eq!(s.get("foo"), Some(&Element::Value(Value::Number(Number::Signed32(420)))));
+    /// //assert_eq!(s.value("foo"), Some(&420i32))
+    /// ```
+    ///
+    #[doc(hidden)]
     pub fn value<'x, V: From<&'x Element>>(&'x self, key: &str) -> Option<V> {
         match V::try_from(self.0.get(key)?) {
             Ok(x) => Some(x),

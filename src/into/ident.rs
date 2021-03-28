@@ -1,8 +1,12 @@
 use crate::{Element, Number, Value};
 use crate::types::ident::{ElementIdent, NumberIdent, ValueIdent};
 
+/// Trait for converting a value or element into an Ident.
 pub trait Ident {
+    /// Respective ident type
     type IdentType;
+
+    /// Get the respective ident for the element.
     fn ident(&self) -> Self::IdentType;
 }
 

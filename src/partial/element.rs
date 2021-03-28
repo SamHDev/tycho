@@ -1,9 +1,8 @@
 use std::io::{Read, Seek};
 
 use crate::error::TychoResult;
-use crate::partial::{PartialArray, PartialList, PartialMap};
 use crate::partial::reader::PartialReader;
-use crate::partial::types::PartialStruct;
+use crate::partial::types::{PartialStruct, PartialList, PartialMap, PartialArray};
 use crate::read::element::read_element_ident;
 use crate::read::length::read_length;
 use crate::read::string::read_tstring;

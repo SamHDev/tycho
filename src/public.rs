@@ -197,8 +197,7 @@ mod serde_public {
     ///
     /// ```
     /// use serde::Serialize;
-    /// use tycho::{to_element, Element, to_bytes};
-    /// use tycho::collections::Struct;
+    /// use tycho::{Element, to_bytes};
     ///
     /// // Create a serializable serde structure.
     /// #[derive(Serialize)]
@@ -222,7 +221,7 @@ mod serde_public {
     ///
     /// ```
     /// use serde::Deserialize;
-    /// use tycho::{to_element, Element, to_bytes, from_element};
+    /// use tycho::{Element, from_element};
     /// use tycho::collections::Struct;
     ///
     /// // Create a serializable serde structure.
@@ -235,6 +234,7 @@ mod serde_public {
     /// let mut map = Struct::new();
     /// map.insert("foo", "Hi");
     ///
+    /// // Deserialize map
     /// let example: Example = from_element(map).unwrap();
     ///
     /// assert_eq!(example, Example { foo: "Hi".to_string() })
@@ -244,8 +244,30 @@ mod serde_public {
     }
 
     /// Deserialize tycho bytes into a serde deserializable object. (requires `serde_support`)
+    ///
+    /// ```
+    /// use serde::Deserialize;
+    /// use tycho::from_bytes;
+    ///
+    /// // Create a serializable serde structure.
+    /// #[derive(Deserialize, PartialEq, Debug)]
+    /// pub struct Example {
+    ///     foo: String
+    /// }
+    ///
+    /// // Example bytes
+    /// let bytes = vec![5, 9, 102, 111, 111, 0, 1, 2, 2, 72, 105];
+    ///
+    /// // Deserialize bytes
+    /// let data: Example = from_bytes(&bytes).unwrap();
+    ///
+    /// assert_eq!(data, Example { foo: "Hi".to_string() })
+    ///
+    /// ```
     pub fn from_bytes<D: DeserializeOwned>(b: &[u8]) -> TychoResult<D> {
         from_element(unmarshall_vec(b.to_vec())?)
     }
 }
 
+pub use crate::into::ident::Ident;
+pub use crate::into::value::ValueType;

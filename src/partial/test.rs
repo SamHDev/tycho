@@ -11,7 +11,7 @@ fn test() {
     data.insert("bar", 20u16);
     data.insert("baz", "Hello World");
 
-    println!("{:?}", data);
+    //println!("{:?}", data);
 
     let bytes = marshall_vec(data).unwrap();
 
@@ -21,11 +21,11 @@ fn test() {
     let root = reader.element().unwrap();
 
     if let PartialElement::Struct(mut s) = root {
-        println!("{:?}", s.pointer);
-        for (key, value) in s.iter(&mut reader) {
-            println!("{}: {:?}", key, value);
+        //println!("{:?}", s.pointer);
+        for (_key, _value) in s.iter(&mut reader) {
+            //println!("{}: {:?}", key, value);
         }
         s.top();
-        println!("{:?}", s.collect(&mut reader));
+        //println!("{:?}", s.collect(&mut reader));
     }
 }

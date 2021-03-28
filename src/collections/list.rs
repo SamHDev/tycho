@@ -28,9 +28,11 @@ impl DerefMut for List {
 }
 
 impl List {
+    /// Create a new empty list.
     pub fn new() -> Self { Self(Vec::new()) }
 }
 impl From<Vec<Element>> for List {
+    /// Create a new list from an existing Vec.
     fn from(v: Vec<Element>) -> Self {
         Self(v)
     }
