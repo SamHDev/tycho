@@ -1,10 +1,11 @@
-use std::io::{Cursor, Read, Result as IoResult, Seek, SeekFrom};
+use std::io::{Cursor, Read, Result as IoResult, Seek, SeekFrom, Write};
 
 #[cfg(feature="partial_state")]
 use rand;
 
-use crate::error::{parse_io, TychoResult, TychoStatus};
+use crate::error::{parse_io, TychoResult, TychoStatus, TychoError};
 use crate::partial::element::{PartialElement, read_partial_element};
+use std::borrow::Borrow;
 
 pub struct PartialReader<R> {
     pub(crate) reader: R,
@@ -29,17 +30,34 @@ impl PartialReader<Cursor<Vec<u8>>> {
 // sync implementation
 impl<R: Read + Seek> PartialReader<R> {
 
-
+    /// Jump to a pointer location.
     pub fn jump(&mut self, to: &u64) -> TychoStatus {
         parse_io(self.reader.seek(SeekFrom::Current((*to as i64) - (self.pointer as i64))))?;
         self.pointer = *to;
         Ok(())
     }
 
+    /// Get the next element of the reader.
     pub fn element(&mut self) -> TychoResult<PartialElement> {
         read_partial_element(self)
+
     }
+
 }
+
+/*
+impl<R: Read + Seek + Write> PartialReader<R> {
+    pub fn snip(&mut self, pointer: PartialPointer) -> TychoResult<Vec<u8>> {
+        #[cfg(feature="partial_state")]
+        if self.pointer.ident != reader.ident {
+            return Err(TychoError::OutdatedPointer)
+        }
+
+        self.jump(&pointer.pos)?;
+
+        self.reader.rem2
+    }
+}*/
 
 impl<R> PartialReader<R> {
     pub fn from(reader: R) -> PartialReader<R> {

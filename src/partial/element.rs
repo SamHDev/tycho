@@ -11,6 +11,7 @@ use crate::types::ident::{ElementIdent, ValueIdent};
 use crate::Value;
 
 #[derive(Debug, Clone)]
+/// A partial, unread, element with a pointer.
 pub enum PartialElement {
     Unit,
     Value(Value),

@@ -152,9 +152,27 @@ pub enum Element {
 
     /// ### Compression Marker
     /// Contains an element that will be g-zip compressed.
-    Compression(Box<Element>)
+    Compression(Box<Element>),
+
+    // /// ### Hashed Marker
+    // /// Contains an element with its given sha-3 hash for verification
+    // Hashed(Box<Element>, Vec<u8>)
+
 
     // /// ### Signed Marker
-    // /// Contains an element is sha-3 hash signed with a given byte key.
+    // /// Contains an element with sha-3 hash signed with a concatenated 16 byte key.
+    // ///
+    // /// ```
+    // /// SHA3(SHA3(DATA) + KEY)
+    // /// ```
     // Signed(Box<Element>, Vec<u8>)
+
+    // /// ### Encrypted Marker
+    // /// Contains an element with its given sha-3 hash for verification
+    // Encrypted(Box<Element>)
+
+
+    /// Unknown Marker
+    /// 2
+    UnknownMarker(Vec<u8>, Option<Vec<u8>>)
 }

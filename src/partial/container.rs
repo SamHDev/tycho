@@ -15,21 +15,27 @@ pub trait PartialContainerType {
 
 #[derive(Debug, Clone)]
 pub struct PartialContainer<T: PartialContainerType> {
+    /// The container start pointer.
     pub pointer: PartialPointer,
+    /// The local container head pointer.
     pub head: u64,
+    /// Parameters for the container.
     pub param: T::ItemParam,
     _phantom: PhantomData<T>
 }
 
 impl<T: PartialContainerType> PartialContainer<T> {
+    /// Create a new partial container
     pub(crate) fn new(pointer: PartialPointer, head: u64, param: T::ItemParam) -> Self {
         PartialContainer { pointer, head, _phantom: Default::default(), param }
     }
 
+    /// Create an empty partial container
     pub(crate) fn empty(pointer: PartialPointer, param: T::ItemParam) -> Self {
         PartialContainer { pointer, head: 0, _phantom: Default::default(), param }
     }
 
+    /// Read next item
     pub(crate) fn next_item<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<Option<T::ItemType>> {
         #[cfg(feature="partial_state")]
         if self.pointer.ident != reader.ident {
@@ -60,16 +66,20 @@ impl<T: PartialContainerType> PartialContainer<T> {
         Ok(Some(item))
     }
 
+    /// Returns if the local pointer head has reached the end of the container.
     pub fn finished(&self) -> bool { self.head == self.pointer.size }
 
+    /// Get the next item in the container
     pub fn next<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<Option<T::ItemType>> {
         self.next_item(reader)
     }
 
+    /// Get an iterator of the container.
     pub fn iter<'x, R: Read + Seek>(&'x mut self, reader: &'x mut PartialReader<R>) -> PartialContainerIterator<'x, T, R> {
         PartialContainerIterator::new(self, reader)
     }
 
+    /// Collect all items within the container.
     pub fn collect<R: Read + Seek>(&mut self, reader: &mut PartialReader<R>) -> TychoResult<Vec<T::ItemType>> {
         let mut items = Vec::new();
         while let Some(item) = self.next_item(reader)? {
@@ -78,6 +88,7 @@ impl<T: PartialContainerType> PartialContainer<T> {
         Ok(items)
     }
 
+    /// Move the head to the top/start
     pub fn top(&mut self) {
         self.head = 0;
     }
