@@ -1,6 +1,6 @@
 [package]
 name = "tycho"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Sam Huddart <sam.fucked.up@samh.dev>"]
 edition = "2018"
 description = "A minimal, self-describing and traversable binary data format designed around rust and the serde data model."
