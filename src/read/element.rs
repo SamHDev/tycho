@@ -9,6 +9,9 @@ use crate::read::string::read_tstring;
 use crate::read::value::{read_value, read_value_ident};
 use crate::types::ident::{ElementIdent, ValueIdent};
 
+#[cfg(feature="compression")]
+use crate::read::compress::decompress;
+
 pub(crate) fn read_element_ident<R: Read>(reader: &mut R) -> TychoResult<ElementIdent> {
      parse_element_ident(read_byte(reader)?)
 }
@@ -116,8 +119,14 @@ pub(crate) fn read_element<R: Read>(reader: &mut R) -> TychoResult<Element> {
         },
         ElementIdent::Compression => {
             let size = read_length(reader)?;
-            let mut buffer = Cursor::new(read_bytes(reader, size)?);
-            Ok(Element::Compression(Box::new(read_element(&mut buffer)?)))
+            let bytes = read_bytes(reader, size)?;
+
+            #[cfg(not(feature="compression"))]
+            return Ok(Element::Compression(bytes));
+
+            #[cfg(feature="compression")]
+            let mut buffer = Cursor::new(decompress(bytes)?);
+            return Ok(Element::Compression(Box::new(read_element(&mut buffer)?)))
         }
     }
 }

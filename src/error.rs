@@ -5,19 +5,41 @@ use crate::ident::ElementIdent;
 use crate::types::ident::ValueIdent;
 
 #[derive(Debug)]
+/// Error regarding a tycho process
 pub enum TychoError {
+    /// An `std::io::Error` was encountered while reading/writing to a or stream/buffer.
     Io(std::io::Error),
-    InvalidIdent { found: u8, expecting: String },
+    /// An invalid identity was found when parsing a tycho ident prefix.
+    InvalidIdent {
+        /// The prefix byte found.
+        found: u8,
+        /// The name/type of the expected prefix.
+        expecting: String
+    },
+    /// An error occurred while parsing a UTF-8 String from bytes.
     StringError(std::string::FromUtf8Error),
+
+    /// An unspecified error.
     Other(String),
 
     #[cfg(feature="partial_state")]
+    /// A pointer was referenced, but is no-longer valid as the data may have changed.
     OutdatedPointer,
 
     #[cfg(feature="serde_support")]
-    InvalidKeyType { found: ElementIdent },
+    /// A key was mismatched when handling serde.
+    InvalidKeyType {
+        /// The type of element found.
+        found: ElementIdent
+    },
     #[cfg(feature="serde_support")]
-    MismatchedType { found: ValueIdent, expected: ValueIdent },
+    /// A type was mismatched when handling serde.
+    MismatchedType {
+        /// The type of element found.
+        found: ValueIdent,
+        /// The type of element expected.
+        expected: ValueIdent
+    },
 
 }
 
@@ -79,7 +101,10 @@ impl fmt::Display for TychoError {
 }
 impl std::error::Error for TychoError {}
 
+/// A result which errors with `TychoError` (`Result<T, TychoError>`)
 pub type TychoResult<T> = Result<T, TychoError>;
+
+/// A unit result which errors with `TychoError` (`Result<(), TychoError>`)
 pub type TychoStatus = TychoResult<()>;
 
 

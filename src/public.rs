@@ -271,3 +271,7 @@ mod serde_public {
 
 pub use crate::into::ident::Ident;
 pub use crate::into::value::ValueType;
+
+
+#[cfg(feature="compression")]
+pub use crate::into::compression;

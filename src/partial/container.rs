@@ -1,3 +1,5 @@
+//! The common container structure used within container types.
+
 use std::io::{Read, Seek};
 use std::marker::PhantomData;
 

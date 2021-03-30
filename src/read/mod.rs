@@ -7,3 +7,6 @@ pub(crate) mod element;
 
 #[cfg(feature="async_tokio")]
 pub(crate) mod async_;
+
+#[cfg(feature="compression")]
+pub(crate) mod compress;

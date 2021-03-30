@@ -2,7 +2,7 @@ use std::io::{Read, Seek};
 
 use crate::error::TychoResult;
 use crate::partial::reader::PartialReader;
-use crate::partial::types::{PartialStruct, PartialList, PartialMap, PartialArray};
+use crate::partial::types::{PartialStruct, PartialList, PartialMap, PartialArray, PartialCompression};
 use crate::read::element::read_element_ident;
 use crate::read::length::read_length;
 use crate::read::string::read_tstring;
@@ -21,7 +21,7 @@ pub enum PartialElement {
     List(PartialList),
     Map(PartialMap),
     Array(PartialArray),
-
+    Compression(PartialCompression),
 }
 
 pub fn read_partial_element<R: Read + Seek>(reader: &mut PartialReader<R>) -> TychoResult<PartialElement> {
@@ -85,6 +85,11 @@ pub fn read_partial_element<R: Read + Seek>(reader: &mut PartialReader<R>) -> Ty
             Ok(PartialElement::Map(PartialMap::new(reader.pointer(pos, size), 0, key_type)))
         },
 
-        _ => { panic!("{:?}", ident)}
+        ElementIdent::Compression => {
+            let size = read_length(reader)? as u64;
+            let pos = reader.pointer.clone();
+            reader.jump(&size)?;
+            Ok(PartialElement::Compression(PartialCompression::new(reader.pointer(pos, size))))
+        }
     }
 }

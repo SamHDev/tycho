@@ -10,7 +10,7 @@ use crate::read::async_::value::{read_value_async, read_value_ident_async};
 use crate::types::ident::ValueIdent;
 use futures::future::BoxFuture;
 use futures::FutureExt;
-use crate::partial::types::{PartialStruct, PartialList, PartialArray, PartialMap};
+use crate::partial::types::{PartialStruct, PartialList, PartialArray, PartialMap, PartialCompression};
 
 pub fn read_partial_element_async<R: AsyncRead + AsyncSeek + Unpin + Send>(reader: &mut PartialReader<R>) -> BoxFuture<TychoResult<PartialElement>> {
     async move {
@@ -74,7 +74,12 @@ pub fn read_partial_element_async<R: AsyncRead + AsyncSeek + Unpin + Send>(reade
                 Ok(PartialElement::Map(PartialMap::new(reader.pointer(pos, size), 0, key_type)))
             },
 
-            _ => { panic!("{:?}", ident) }
+            ElementIdent::Compression => {
+                let size = read_length_async(reader).await? as u64;
+                let pos = reader.pointer.clone();
+                reader.jump_async(&size).await?;
+                Ok(PartialElement::Compression(PartialCompression::new(reader.pointer(pos, size))))
+            }
         }
     }.boxed()
 }

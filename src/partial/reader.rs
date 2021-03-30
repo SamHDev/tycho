@@ -1,12 +1,46 @@
-use std::io::{Cursor, Read, Result as IoResult, Seek, SeekFrom, Write};
+use std::io::{Cursor, Read, Result as IoResult, Seek, SeekFrom};
 
 #[cfg(feature="partial_state")]
 use rand;
 
-use crate::error::{parse_io, TychoResult, TychoStatus, TychoError};
+use crate::error::{parse_io, TychoResult, TychoStatus};
 use crate::partial::element::{PartialElement, read_partial_element};
-use std::borrow::Borrow;
 
+/// A reader with an inner pointer and state management for reading tycho partially.
+///
+/// PartialReader can take two types of reader:
+/// - sync (`std::io::Read` + `std::io::Seek`)
+/// - async (`tokio::io:AsyncRead` + `tokio::io::AsyncSeek`)
+///
+/// When using async, functions are suffixed with a `_async`.
+/// For example `element()` would become `element_async().await`
+///
+/// ### Creating
+/// You can create a partial reader by giving any sized type.
+/// ```
+/// use std::io::Cursor;
+/// use tycho::partial::PartialReader;
+/// let cursor = Cursor::new(vec![]);
+///
+/// let mut reader = PartialReader::from(reader);
+/// ```
+///
+/// You can also give a vec of bytes:
+///
+/// ```
+/// use tycho::partial::PartialReader;
+/// let mut reader = PartialReader::from_vec(vec![]);
+/// ```
+///
+/// ### Reading
+///
+/// You can get the inital/root element of the reader by calling `.element()`
+/// ```
+/// use tycho::partial::PartialReader;
+/// let mut reader = PartialReader::from_vec(vec![]);
+///
+/// let element = reader.element().unwrap();
+/// ```
 pub struct PartialReader<R> {
     pub(crate) reader: R,
     pub(crate) pointer: u64,
@@ -99,6 +133,7 @@ impl<R: Read + Seek> Read for PartialReader<R> {
 
 
 #[derive(Debug, Clone)]
+/// A pointer, referring to a block of data in a partial reader.
 pub struct PartialPointer {
     pub(crate) pos: u64,
     pub(crate) size: u64,

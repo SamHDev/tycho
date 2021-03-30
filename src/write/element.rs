@@ -4,9 +4,12 @@ use crate::Element;
 use crate::error::TychoStatus;
 use crate::into::ident::Ident;
 use crate::types::ident::ValueIdent;
-use crate::write::func::{write_buffer, write_byte};
+use crate::write::func::{write_buffer, write_byte, write_bytes};
 use crate::write::string::write_tstring;
 use crate::write::value::{write_value, write_value_ident};
+
+#[cfg(feature="compression")]
+use crate::write::compress::compress;
 
 pub(crate) fn write_element<W: Write>(writer: &mut W, element: &Element) -> TychoStatus {
     match element {
@@ -72,12 +75,17 @@ pub(crate) fn write_element<W: Write>(writer: &mut W, element: &Element) -> Tych
                write_buffer(writer, buffer)
            }
         }
+        #[cfg(feature="compression")]
         Element::Compression(compression) => {
             write_byte(writer, &0xF0)?;
             let mut buffer = BufWriter::new(Vec::new());
             write_element(&mut buffer, compression)?;
-            // todo: compression
-            write_buffer(writer, buffer)
+            write_bytes(writer, &*compress(buffer.buffer().to_vec())?.to_vec())
+        }
+        #[cfg(not(feature="compression"))]
+        Element::Compression(compression) => {
+            write_byte(writer, &0xF0)?;
+            write_bytes(writer, compression)
         }
     }
 }
