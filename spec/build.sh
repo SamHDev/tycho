@@ -1,1 +1,0 @@
-pdflatex spec.tex

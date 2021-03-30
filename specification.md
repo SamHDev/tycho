@@ -103,6 +103,7 @@ they must be adjacent to the payload. Hence, they are considered **Prefixes** ra
 | List | vec | `0x06` | `size`  *{ `element` } | An ordered list of elements.
 | Map | HashMap | `0x07` | `ident` `size` *{ `payload` `element` } | A map of values and elements where the value key is type restricted. |
 | Array | vec | `0x08` | `ident` `size` *{ `payload` } | A type restricted array of values |
+| Compression | N/A | `0xF0` | `size` `[...bytes]` | Gz compressed element. 
 
 > \*1 Size is variable length number representing the size of the payload in bytes, not including itself
 
@@ -110,3 +111,8 @@ they must be adjacent to the payload. Hence, they are considered **Prefixes** ra
 > If `ident` is of type `Null`, then the element does not contain any data, and hence size or any other data is not present.
 
 
+
+### Implementation Tips
+- Tycho was designed to read/written recursively.
+- Separate parsing of prefixes/idents and payloads for both elements, values and numbers.
+- [My development notes](dev_notes.md)

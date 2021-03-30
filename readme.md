@@ -11,7 +11,17 @@ A minimal, self-describing and traversable data format designed around rust and 
 - Ability to contain a single non-terminating value.
 
 
-[Specification]()
+### Links
+> [Specification](https://github.com/SamHDev/tycho/blob/master/specification.md)
+>
+> [Repository](https://github.com/SamHDev/tycho/)
+>
+> [Crate](https://crates.io/crates/tycho)
+>
+> [Documentation](https://docs.rs/tycho/)
+>
+> [Libraries](https://github.com/SamHDev/tycho/blob/master/libraries.md)
+
 
 ### Examples
 ```
@@ -28,7 +38,7 @@ Struct({"baz": Value(Boolean(true)), "bar": Value(Number(Unsigned8(10))), "foo":
 ```
 
 
-### Deconstruction
+#### Deconstruction
 ```
 05 - Structure
     21 - (33 bytes length)
