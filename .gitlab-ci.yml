@@ -5,6 +5,7 @@ test:
   script:
     - rustc --version && cargo --version
     - cargo test --workspace --verbose --all-features --all
+    - cargo test --workspace --verbose -all
 
 pages:
   stage: deploy

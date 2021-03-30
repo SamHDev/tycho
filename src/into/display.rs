@@ -60,7 +60,7 @@ impl fmt::Display for Element {
             Element::List(x) => fmt::Debug::fmt(x, f),
             Element::Array(_, x) => fmt::Debug::fmt(x, f),
             Element::Map(_, x) => fmt::Debug::fmt(x, f),
-            Element::Compression(x) => fmt::Display::fmt(x, f),
+            Element::Compression(x) => fmt::Debug::fmt(x, f),
         }
     }
 }

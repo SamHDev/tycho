@@ -1,7 +1,9 @@
 //! Error types returned from tycho marshall/unmarshall/serialise/deserialize processes.
 use std::fmt;
 
+#[cfg(feature="serde_support")]
 use crate::ident::ElementIdent;
+#[cfg(feature="serde_support")]
 use crate::types::ident::ValueIdent;
 
 #[derive(Debug)]
