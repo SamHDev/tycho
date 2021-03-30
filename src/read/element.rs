@@ -126,6 +126,7 @@ pub(crate) fn read_element<R: Read>(reader: &mut R) -> TychoResult<Element> {
 
             #[cfg(feature="compression")]
             let mut buffer = Cursor::new(decompress(bytes)?);
+            #[cfg(feature="compression")]
             return Ok(Element::Compression(Box::new(read_element(&mut buffer)?)))
         }
     }
