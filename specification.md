@@ -1,132 +1,118 @@
-# Tycho Specification
-This document describes the syntax/grammar for the Tycho binary format version 4.0.
+# Tycho 7 Specification
 
-### Bytes
-The binary format uses octets (8-bits) and quartets (4-bits)
-```
-0xA0          An octet of value 10
-0xA           A quartet of value 10
-0xA 0xB       Two quartet's as a single byte (0xAB)
-              (consecutive quartets form a byte)
-```
-As stated above, two consecutive quartets will become one octet.
+## Design
+The original purpose of the Tycho binary format was a transmission format, aiming to be small while still being
+self describing and offing types that respected the language that I worked in. Other binary formats such as BSON and
+MessagePack were unable to fulfill this.
 
-### Defined Types
-The following types are basic/primitive types used within the specification.
-```
-nibble          1/2 byte (4-bits)
-byte            1 byte (8-bits)
-unsigned8       1 byte (8-bit unsigned integer)
-unsigned16      2 bytes (16-bit unsigned integer, big-endian)
-unsigned32      4 bytes (32-bit unsigned integer, big-endian)
-unsigned64      8 bytes (64-bit unsigned integer, big-endian)
-unsigned128     16 bytes (128-bit unsigned integer, big-endian)
-signed8         1 byte (8-bit signed integer, 2's compelement)
-signed16        2 bytes (16-bit signed integer, big-endian, 2's compelement)
-signed32        4 bytes (32-bit signed integer, big-endian, 2's compelement)
-signed64        8 bytes (64-bit signed integer, big-endian, 2's compelement)
-signed128       16 bytes (128-bit signed integer, big-endian, 2's compelement)
-float32         4 bytes  ("binary32" IEEE 754-2008, big-endian)
-float64         8 bytes  ("binary64" IEEE 754-2008, big-endian)
-char            1-6 bytes (UTF-8 character, big-endian)
-varlength       1-4 bytes (A variable length unsigned number, representing a length. [See Below])
-```
+However, a new binary format is required for my astra database project, and small transmission sizes, while enticing are not
+the main requirement anymore. It makes sense for me to redesign the tycho binary format, to achieve these requirements:
 
-#### Variable Lengths
-Variable lengths are used to keep document sizes down when specifying strings, lists, structures, maps and arrays.
-Rather than using a fix-length number, a variable length can be between 1-4 bytes, only using a byte when needed.
+- Simple/Low processing to read.
+- Contain all types of Rust/Serde data model
+- Support UUIDs
+- Partial Traversal for large amounts of data.
+- Small enough for viable transmission.
+- Compression support
 
-This implementation of variable length numbers prefixes the length of the number (in bytes) within the 2 bits.
-This allows for 6-30 bits to be used for data with a maximum value of 1073741823.
+## Specification
+### Lengths
+In-order to keep structure sizes small, lengths or arrays or prefixed byte sizes use a variable length number to
+represent its respective size.
 
-##### Diagram
+Tycho's Variable Length Numbers are defined as such:
+- A number is formed of 8 bit bytes
+- The 7 least significant bits of an octet represent the number data.
+- The most significant bit, is a logical bit representing if there is another byte.
+- The number is represented in little endian format.
+- The number is a 32-bit unsigned number (5 encoded bytes max)
+
+
+Here is an example of the encoding:
 ```
-OCTETS       0                       1                    2                       3  
-BITS         0  1  2  3  4  5  6  7  8  9 10 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-LENGTH  ::=  LEN   DATA              DATA (LEN > 0)       DATA (LEN > 1)          DATA (LEN > 2)
-          |  
-          | LEN       A 2 bit unsigned number representing the number of following bytes
-          | DATA      A 6-30 but unsigned number representing the length of the following string/array/map
+CONTINUE(Y)         CONTINUE(N)
+|  DATA             |  DATA
+1  1 0 1 0 1 0 1    0  1 0 0 0 1 1 0
 ```
 
-##### Example Code
-```python
-# Todo
-```
+Tycho's Variable length encoding is very similar to ProtoBuf's uint32.
 
-##### Examples
-| Numerical | Length | Bytes                        | Hex                          |
-| --------- | -------| ---------------------------- | ---------------------------- |
-| 1         | 1      | `1`                          | `0x01`                       |
-| 64        | 2      | `64`, `64`                   | `0x4040`                     |
-| 255       | 2      | `64`, `255`                  | `0x40FF`                     |
-| 1024      | 2      | `68`, `0`                    | `0x40FF`                     |
-| 42069     | 3      | `128`, `164`, `85`           | `0x80A455`                   |
-| 42069420  | 4      | `194`, `129`, `237`, `172`   | `0xC281EDAC`                 |
+### Terminating Strings
+Terminating strings (`tstring`) are used in key/name fields. 
 
+Like a CString, it's a UTF-8 encoded string followed by a "terminating" NULL (`0x00`) byte.
 
-### Specification
-A Specification of the format, using the [defined types](#Defined-Types) and [byte notation](#Bytes) as seen above.
-#### Grammar
-```
-0x01                            Literial Byte
-01                              Literial Nibble
-unsigned8                       A type (defined in 'defined types' or within the spec)
-*byte                           An array of a type
-item(ident)                     A type with a paramater
-value ::= 0x01 value            Type definition
-value(x:ident) ::= 0x01 value   Type definition with a paramter (where x is the name, and ident is the type)
-```
+> A `tstring` is to not be confused with `string` which is length prefixed.
 
-#### Specification
-```
-value          ::= ident data(ident)
+### Types
+Tycho comes with two types of data, **Values** and **Elements**. Values are primitive, terminating data such as
+strings, booleans, numbers and byte arrays. Elements are non-terminating data and have the ability to contain other
+values and elements.
 
-data(i:ident)  ::= i=0x0 0x00                        Boolean False
-                 | i=0x0 0x01                        Boolean True
-                 | i=0x1 unsigned8                   8-bit unsigned integer
-                 | i=0x2 unsigned16                  16-bit unsigned integer
-                 | i=0x3 unsigned32                  32-bit unsigned integer
-                 | i=0x4 unsigned64                  64-bit unsigned integer
-                 | i=0x5 unsigned128                 128-bit unsigned integer
-                 | i=0x6 signed8                     8-bit signed integer
-                 | i=0x7 signed16                    16-bit signed integer
-                 | i=0x8 signed32                    32-bit signed integer
-                 | i=0x9 signed64                    64-bit signed integer
-                 | i=0xA signed128                   128-bit signed integer
-                 | i=0xB float32                     32-bit floating point number
-                 | i=0xC float64                     64-bit floating point number
-                 | i=0xD string                      An UTF-8 string value
-                 | i=0xE char                        A single UTF-8 character
-                 | i=0xF bytes                       A array of octets
+### Values 
+Values contain two components; An **Ident** "prefix" and their respective payload. A value's prefix does not need
+to be adjacent to value, in a few cases a parent element can define the Value Ident, and the inner values should
+be read accordingly. Value's Idents can be one or two bytes long.
 
-ident          ::= nibble                            A identifier for a value 
+> Please allow for any length of ident within your implementation by using a byte array rather than reading an u16.
+ 
+The payload of a value varies in size should be read in full even when parsing partially.
 
-string         ::= varlength *byte                   An UTF-8 string, where (*byte) is an array of octets with the
-                 |                                   length specified with the varlength
+#### Base Values
+| Name | Rust | Ident | Payload | Description |
+| ---- | ---- | ----- | ------- | ----------- |
+| Null | N/A  | `0x00`  | No data | A null type, used to signify no type or no length. |
+| Boolean | bool | `0x01` | 1 byte| A boolean, where the single data byte is 0x00 (false) or 0x01 (true) |
+| String | String | `0x02` | `length` `[...bytes]` | A byte length prefixed UTF-8 string.
+| Char | car | `0x03` | `[1-6 bytes]` | A UTF-8 encoded char with no terminator or length. |
+| Number | ... | `0x04` ... | ... | A number with a given prefix, defined below. |
+| Bytes | \[u8\] | `length` `[...bytes]` | An array of bytes with a given length. |
+| UUID | uuid::Uuid | `0x06` | `[12 bytes]` | A 128-bit Uuid in big-endian. |
 
-bytes          ::= varlength *byte                   An array of bytes, where (*byte) is an array of octets with the
-                 |                                   length specified with the varlength
-
-tstring        ::= *byte 0x00                        A terminating UTF-8 string, where (*byte) is an array of octets.
-                                                     (Deprecated)
-
-element        ::= 0x0 0x0                           Unit (Null/Nil) - No data
-                 | 0x1 value                         A primitive, terminating value
-                 | 0x2 0x0                           Optional - None
-                 | 0x2 0x1 element                   Optional - Some
-                 | 0x3 0x0 varlength *element        An array of elements with length given by the preceding varlength
-                 | 0x4 0x0 varlength *field          A structure, a variable type key-element map, defined by an array
-                 |                                   of field with length given by the preceding varlength
-                 | 0x5 0x0 string element            A variable element type with a given name.
-                 | 0x6 ident varlength *item(ident)  A Map, a fixed type value-element map.
-                 | 0x7 ident varlength *data(ident)  A List, a fixed tpye value only array.
-
-field          ::= string element                    A structure field, containg a key (string) and value (element)
-
-item(x:ident)  ::= data(x) element                   A map item, containg a key (data/value) and value (element) 
-
-```
+#### Numerical Values
+| Name | Rust | Ident | Payload | Description |
+| ---- | ---- | ----- | ------- | ----------- |
+| Bit | N/A | `0x04` `0x00` | 1 byte | A single unsigned bit. 0x00 or 0x01 matching 0b0 0b1 respectively. In most situations Boolean should be used rather than Bit. |
+| Unsigned8 | u8 | `0x04` `0x01` | 1 byte | A unsigned 8 bit number or single octet byte.  |
+| Unsigned16 | u16 | `0x04` `0x02` | 2 bytes | A big-endian encoded unsigned 16 bit number.  |
+| Unsigned32 | u32 | `0x04` `0x03` | 4 bytes | A big-endian encoded unsigned 32 bit number.  |
+| Unsigned64 | u64 | `0x04` `0x04` | 8 bytes | A big-endian encoded unsigned 64 bit number.  |
+| Unsigned128 | u128 | `0x04` `0x05` | 16 bytes | A big-endian encoded unsigned 128 bit number.  |
+| Signed8 | i8 | `0x04` `0x11` | 1 byte | A two's complement signed 8bit number.  |
+| Signed16 | i16 | `0x04` `0x12` | 2 bytes | A big-endian encoded two's complement signed 16 bit number.  |
+| Signed32 | i32 | `0x04` `0x13` | 4 bytes | A big-endian encoded two's complement signed 32 bit number.  |
+| Signed64 | i64 | `0x04` `0x14` | 8 bytes | A big-endian encoded two's complement signed 64 bit number.  |
+| Signed128 | i128 | `0x04` `0x15` | 16 bytes | A big-endian encoded two's complement signed 128 bit number.  |
+| Float32 | f32 | `0x04` `0x23` | 4 bytes | A IEEE 754 32 bit floating point number.  |
+| Float64 | f64 | `0x04` `0x24` | 8 bytes | A IEEE 754 64 bit floating point number.  |
 
 
-MIT LICENSE
+### Elements
+An Element is a non-terminating potential container of elements or values. While elements do have Idents like values,
+they must be adjacent to the payload. Hence, they are considered **Prefixes** rather than Idents.
+
+
+| Name | Rust | Prefix | Data | Description |
+| ---- | ---- | ----- | ------- | ----------- |
+| Unit | () | `0x00` | No Data | A Unit/Null type containing no data. |
+| Value | N/A | `0x01` | `ident`  `payload` | A primitive value containing values defined above with their respective ident. |
+| None | Option::None | `0x02` | No Data | An optional element, where some is false, with no inner element. |
+| Some | Option::Some(T) | `0x03` | `element` | An optional element, where some is true, with a inner element. |
+| Variant | enum | `0x04` | `tstring` `element` | A named variable type. |
+| Struct | struct | `0x05` | `size` *{ `tstring` `element` } | A string-value map of elements.
+| List | vec | `0x06` | `size`  *{ `element` } | An ordered list of elements.
+| Map | HashMap | `0x07` | `ident` `size` *{ `payload` `element` } | A map of values and elements where the value key is type restricted. |
+| Array | vec | `0x08` | `ident` `size` *{ `payload` } | A type restricted array of values |
+| Compression | N/A | `0xF0` | `size` `[...bytes]` | Gz compressed element. 
+
+> \*1 Size is variable length number representing the size of the payload in bytes, not including itself
+
+> \*2 The `ident` type is a value ident, representing the type of `payload`, which is a value payload.
+> If `ident` is of type `Null`, then the element does not contain any data, and hence size or any other data is not present.
+
+
+
+### Implementation Tips
+- Tycho was designed to read/written recursively.
+- Separate parsing of prefixes/idents and payloads for both elements, values and numbers.
+- [My development notes](dev_notes.md)
