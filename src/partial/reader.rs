@@ -20,16 +20,16 @@ use crate::partial::element::{PartialElement, read_partial_element};
 /// ```
 /// use std::io::Cursor;
 /// use tycho::partial::PartialReader;
-/// let cursor = Cursor::new(vec![]);
+/// let cursor = Cursor::new(vec![ 0 ]);
 ///
-/// let mut reader = PartialReader::from(reader);
+/// let mut reader = PartialReader::from(cursor);
 /// ```
 ///
 /// You can also give a vec of bytes:
 ///
 /// ```
 /// use tycho::partial::PartialReader;
-/// let mut reader = PartialReader::from_vec(vec![]);
+/// let mut reader = PartialReader::from_vec(vec![ 0 ]);
 /// ```
 ///
 /// ### Reading
@@ -37,7 +37,7 @@ use crate::partial::element::{PartialElement, read_partial_element};
 /// You can get the inital/root element of the reader by calling `.element()`
 /// ```
 /// use tycho::partial::PartialReader;
-/// let mut reader = PartialReader::from_vec(vec![]);
+/// let mut reader = PartialReader::from_vec(vec![ 0 ]);
 ///
 /// let element = reader.element().unwrap();
 /// ```

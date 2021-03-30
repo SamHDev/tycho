@@ -50,7 +50,7 @@
 //! // From a Vec<u8>
 //! use tycho::partial::PartialReader;
 //!
-//! let mut reader = ParitalReader::from_vec(vec![ /* ... */ ]);
+//! let mut reader = PartialReader::from_vec(Vec::<u8>::new());
 //! ```
 //!
 //! ```
@@ -58,7 +58,7 @@
 //! use std::io::Cursor;
 //! use tycho::partial::PartialReader;
 //!
-//! let cursor = Cursor::new(vec![ /* ... */ ]);
+//! let cursor = Cursor::new(Vec::<u8>::new());
 //! let mut reader = PartialReader::from(cursor);
 //! ```
 //! ```no_run
