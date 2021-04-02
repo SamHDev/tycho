@@ -8,7 +8,6 @@ use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};
 use crate::serde::ser::struct_::StructSerializer;
 use crate::serde::ser::variant::{VariantSeqSerializer, VariantStructSerializer};
 use crate::Value;
-use crate::uuid::UUID_PREFIX;
 
 macro_rules! serialize_number {
     ($ident: ident, $type: ty) => {
@@ -64,12 +63,7 @@ impl Serializer for TychoSerializer {
     }
 
     fn serialize_bytes(self, v: &[u8]) -> Result<Self::Ok, Self::Error> {
-        if v.len() == 32 && v[0..16] == UUID_PREFIX {
-            Ok(Element::Value(Value::UUID(Uuid::from_bytes(&v[16..32]))))
-        } else {
-            Ok(Element::Value(Value::Bytes(v.to_vec())))
-        }
-
+        Ok(Element::Value(Value::Bytes(v.to_vec())))
     }
 
     fn serialize_none(self) -> Result<Self::Ok, Self::Error> {
@@ -108,7 +102,7 @@ impl Serializer for TychoSerializer {
     }
 
     fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple, Self::Error> {
-        unimplemented!()
+        Ok(Self::SerializeSeq::new(SeqSerializerType::Default))
     }
 
     fn serialize_tuple_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeTupleStruct, Self::Error> {

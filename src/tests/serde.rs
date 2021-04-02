@@ -9,11 +9,11 @@ pub struct Example {
 #[test]
 fn test_serde_uuid() {
     let a = Example { foo: Uuid::v4() };
-    //println!("{:?}", a);
+    println!("{:?}", a);
 
-    let _e = to_element(a).unwrap();
-    //println!("{:?}", e);
+    let e = to_element(a).unwrap();
+    println!("{:?}", e);
 
-    //println!("{:?}", from_element::<Example, Element>(e));
+    println!("{:?}", from_element::<Example, Element>(e));
 }
 

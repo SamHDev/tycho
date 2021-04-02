@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
-use serde::ser::SerializeStruct;
+use serde::ser::{SerializeStruct, Error};
 use serde::Serialize;
 
-use crate::Element;
+use crate::{Element, Uuid};
+use crate::Value;
 use crate::error::TychoError;
 use crate::serde::ser::TychoSerializer;
 
@@ -34,6 +35,15 @@ impl SerializeStruct for StructSerializer {
 
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(Element::Struct(self.content))
+        println!("{} {:?}", self.name, self.content);
+        match self.name.as_str() {
+            "___tycho___/uuid" => if let Some(Element::Value(Value::Bytes(x))) = self.content.get("inner") {
+                Ok(Element::Value(Value::UUID(Uuid::from_bytes(&x))))
+            } else {
+                Err(Self::Error::custom("Invalid serde transfer type for Uuid."))
+            }
+            _ => Ok(Element::Struct(self.content))
+        }
+
     }
 }

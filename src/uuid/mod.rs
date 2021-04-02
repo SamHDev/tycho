@@ -1,8 +1,7 @@
 use std::fmt;
 
 #[derive(Clone, Ord, PartialOrd, Eq, PartialEq)]
-/// ### UUID
-/// A simple UUID (v4) implementation for tycho.
+/// A simple UUID (v4) implementation.
 pub struct Uuid(u128);
 
 impl Uuid {
@@ -214,10 +213,6 @@ impl fmt::Display for Uuid {
 #[cfg(feature="serde_support")]
 use serde::{Serialize, Serializer, Deserialize, Deserializer, de::Visitor, de::Error as DeError};
 
-
-#[cfg(feature="serde_support")]
-pub const UUID_PREFIX: [u8; 16] = [0x12, 0x34, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xF0, 0xF9, 0x69, 0x42, 0xAA, 0x00, 0x10, 0x9F];
-
 #[cfg(feature="serde_support")]
 impl Serialize for Uuid {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
@@ -225,11 +220,21 @@ impl Serialize for Uuid {
         if serializer.is_human_readable() {
             serializer.serialize_str(&self.string())
         } else {
-            let mut data = Vec::new();
-            data.extend_from_slice(&UUID_PREFIX);
-            data.extend_from_slice(&self.slice());
-            serializer.serialize_bytes(&data)
+            let mut stu = serializer.serialize_struct("___tycho___/uuid", 1)?;
+            stu.serialize_field("inner", &UuidBytes(self.slice()))?;
+            stu.end()
         }
+    }
+}
+
+#[cfg(feature="serde_support")]
+pub struct UuidBytes([u8; 16]);
+
+#[cfg(feature="serde_support")]
+impl Serialize for UuidBytes {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        serializer.serialize_bytes(&self.0)
     }
 }
 
