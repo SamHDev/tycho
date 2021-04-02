@@ -71,7 +71,7 @@ impl<'de> Deserializer<'de> for TychoDeserializer {
                     Number::Float64(v) => visitor.visit_f64(v)
                 }
                 Value::Bytes(v) => visitor.visit_byte_buf(v),
-                Value::UUID(v) => visitor.visit_bytes(v.as_bytes())
+                Value::UUID(v) => visitor.visit_bytes(&v.bytes())
             },
             Element::Option(option) => match option {
                 Some(v) => visitor.visit_some(TychoDeserializer::new(*v)),

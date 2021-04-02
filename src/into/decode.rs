@@ -82,4 +82,4 @@ value_to!(Boolean, bool);
 value_to!(Char, char);
 value_to!(String, String);
 value_to!(Bytes, Vec<u8>);
-value_to!(UUID, uuid::Uuid);
+value_to!(UUID, crate::Uuid);

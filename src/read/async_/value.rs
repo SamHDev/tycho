@@ -1,5 +1,4 @@
 use tokio::io::AsyncRead;
-use uuid::Uuid;
 
 use crate::error::{TychoError, TychoResult};
 use crate::ident::ValueIdent;
@@ -7,7 +6,7 @@ use crate::read::async_::func::{read_byte_async, read_bytes_async};
 use crate::read::async_::length::read_length_async;
 use crate::read::async_::number::{read_number_async, read_number_ident_async};
 use crate::read::async_::string::{read_char_async, read_string_async};
-use crate::Value;
+use crate::{Value, Uuid};
 
 pub(crate) async fn read_value_ident_async<R: AsyncRead + Unpin>(reader: &mut R) -> TychoResult<ValueIdent> {
     let byte = read_byte_async(reader).await?;
@@ -48,7 +47,7 @@ pub(crate) async fn read_value_async<R: AsyncRead + Unpin>(reader: &mut R, ident
                 read_byte_async(reader).await?, read_byte_async(reader).await?,
                 read_byte_async(reader).await?, read_byte_async(reader).await?,
             ];
-            Ok(Value::UUID(Uuid::from_bytes(bytes)))
+            Ok(Value::UUID(Uuid::from_slice(bytes)))
         }
     }
 }

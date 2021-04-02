@@ -32,4 +32,4 @@ impl_value_type!(&str, ValueIdent::String);
 impl_value_type!(char, ValueIdent::Char);
 //impl_value_type!((), ValueIdent::Null);
 impl_value_type!(Vec<u8>, ValueIdent::Bytes);
-impl_value_type!(uuid::Uuid, ValueIdent::UUID);
+impl_value_type!(crate::Uuid, ValueIdent::UUID);

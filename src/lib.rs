@@ -32,3 +32,7 @@ pub mod error;
 
 #[cfg(test)]
 mod tests;
+
+
+pub(crate) mod uuid;
+pub use crate::uuid::Uuid;

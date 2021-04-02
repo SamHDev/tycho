@@ -1,13 +1,14 @@
 use paste;
 use serde::{Serialize, Serializer};
 
-use crate::{Element, Number};
+use crate::{Element, Number, Uuid};
 use crate::error::TychoError;
 use crate::serde::ser::map::MapSerializer;
 use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};
 use crate::serde::ser::struct_::StructSerializer;
 use crate::serde::ser::variant::{VariantSeqSerializer, VariantStructSerializer};
 use crate::Value;
+use crate::uuid::UUID_PREFIX;
 
 macro_rules! serialize_number {
     ($ident: ident, $type: ty) => {
@@ -32,6 +33,9 @@ impl Serializer for TychoSerializer {
     type SerializeMap = MapSerializer;
     type SerializeStruct = StructSerializer;
     type SerializeStructVariant = VariantStructSerializer;
+
+    fn is_human_readable(&self) -> bool { false }
+
 
     fn serialize_bool(self, v: bool) -> Result<Self::Ok, Self::Error> {
         Ok(Element::Value(Value::Boolean(v)))
@@ -60,7 +64,12 @@ impl Serializer for TychoSerializer {
     }
 
     fn serialize_bytes(self, v: &[u8]) -> Result<Self::Ok, Self::Error> {
-        Ok(Element::Value(Value::Bytes(v.to_vec())))
+        if v.len() == 32 && v[0..16] == UUID_PREFIX {
+            Ok(Element::Value(Value::UUID(Uuid::from_bytes(&v[16..32]))))
+        } else {
+            Ok(Element::Value(Value::Bytes(v.to_vec())))
+        }
+
     }
 
     fn serialize_none(self) -> Result<Self::Ok, Self::Error> {

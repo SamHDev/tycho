@@ -19,10 +19,10 @@ serde_optimise = []
 default = ["serde_optimise"]
 compression = ["flate2"]
 
-
 [dependencies]
 byteorder = "^1.4.2"
 uuid = "^0.8.2"
+hex = "0.4.3"
 
 [dependencies.rand]
 version = "^0.8.3"
