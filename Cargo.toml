@@ -12,21 +12,20 @@ keywords = ["format", "serde", "tokio", "tycho"]
 
 [features]
 partial = []
-partial_state = ["rand"]
+partial_state = []
 async_tokio = ["tokio", "tokio-byteorder", "futures", "async-trait"]
 serde_support = ["serde", "paste"]
 serde_optimise = []
-default = ["serde_optimise"]
+serde_types = []
+default = ["serde_optimise", "serde_types"]
 compression = ["flate2"]
 
 [dependencies]
 byteorder = "^1.4.2"
 uuid = "^0.8.2"
 hex = "0.4.3"
+rand = "^0.8.3"
 
-[dependencies.rand]
-version = "^0.8.3"
-optional = true
 
 [dependencies.tokio]
 version="^1.3.0"

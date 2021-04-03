@@ -211,19 +211,23 @@ impl fmt::Display for Uuid {
 }
 
 #[cfg(feature="serde_support")]
-use serde::{Serialize, Serializer, Deserialize, Deserializer, de::Visitor, de::Error as DeError};
+use serde::{Serialize, Serializer, Deserialize, Deserializer, de::Visitor, de::Error as DeError, ser::SerializeStruct};
 
 #[cfg(feature="serde_support")]
 impl Serialize for Uuid {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
-        if serializer.is_human_readable() {
+        #[cfg(feature="serde_types")]
+        return if serializer.is_human_readable() {
             serializer.serialize_str(&self.string())
         } else {
             let mut stu = serializer.serialize_struct("___tycho___/uuid", 1)?;
             stu.serialize_field("inner", &UuidBytes(self.slice()))?;
             stu.end()
-        }
+        };
+
+        #[cfg(not(feature="serde_types"))]
+        return serializer.serialize_str(&self.string())
     }
 }
 

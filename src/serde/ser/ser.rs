@@ -1,7 +1,7 @@
 use paste;
 use serde::{Serialize, Serializer};
 
-use crate::{Element, Number, Uuid};
+use crate::{Element, Number};
 use crate::error::TychoError;
 use crate::serde::ser::map::MapSerializer;
 use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};

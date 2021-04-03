@@ -7,3 +7,5 @@ pub(crate) mod decode;
 
 #[cfg(feature="compression")]
 pub mod compression;
+
+mod internal;
