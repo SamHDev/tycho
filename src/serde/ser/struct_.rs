@@ -9,6 +9,7 @@ use crate::error::TychoError;
 use crate::serde::ser::TychoSerializer;
 use crate::serde::ser::seq::{SeqSerializer, SeqSerializerType};
 use crate::types::ident::ValueIdent;
+use crate::serde::ser::map::MapSerializer;
 
 #[allow(dead_code)]
 pub struct StructSerializer {
@@ -32,23 +33,50 @@ impl SerializeStruct for StructSerializer {
     #[cfg(feature="serde_types")]
     fn serialize_field<T: ?Sized>(&mut self, key: &'static str, value: &T) -> Result<(), Self::Error> where
         T: Serialize {
-        if &self.name == "__tycho__/array" && key == "inner" {
-            if let Some(Element::Value(Value::Number(Number::Unsigned8(internal)))) = self.content.get("ident") {
-                if let Some(ident) = ValueIdent::from_internal_prefix(&internal) {
-                    self.content.insert(
-                        "inner".to_string(),
-                        value.serialize(
-                            SeqSerializer::new(SeqSerializerType::Array(ident))
-                        )?);
-                } else {
-                    return Err(Self::Error::custom("Invalid serde transfer type for Array."));
+
+        if key == "inner" {
+
+            match self.name.as_str() {
+                "__tycho__/array" => {
+                    return if let Some(Element::Value(Value::Number(Number::Unsigned8(internal)))) = self.content.get("ident") {
+                        if let Some(ident) = ValueIdent::from_internal_prefix(&internal) {
+                            self.content.insert(
+                                "inner".to_string(),
+                                value.serialize(
+                                    SeqSerializer::new(SeqSerializerType::Array(ident))
+                                )?);
+                            Ok(())
+                        } else {
+                            Err(Self::Error::custom("Invalid serde transfer type for Array."))
+                        }
+                    } else {
+                        Err(Self::Error::custom("Invalid serde transfer type for Array."))
+                    }
+                },
+
+                "__tycho__/map" => {
+                    return if let Some(Element::Value(Value::Number(Number::Unsigned8(internal)))) = self.content.get("ident") {
+                        if let Some(ident) = ValueIdent::from_internal_prefix(&internal) {
+                            self.content.insert(
+                                "inner".to_string(),
+                                value.serialize(MapSerializer::typed(ident))?
+                            );
+                            Ok(())
+                        } else {
+                            Err(Self::Error::custom("Invalid serde transfer type for Array."))
+                        }
+                    } else {
+                        Err(Self::Error::custom("Invalid serde transfer type for Array."))
+                    }
                 }
-            } else {
-                return Err(Self::Error::custom("Invalid serde transfer type for Array."));
+
+                _ => ()
+
             }
-        } else {
-            self.content.insert(key.to_string(), value.serialize(TychoSerializer)?);
+
         }
+
+        self.content.insert(key.to_string(), value.serialize(TychoSerializer)?);
         Ok(())
     }
 
@@ -61,7 +89,6 @@ impl SerializeStruct for StructSerializer {
 
     #[cfg(feature="serde_types")]
     fn end(mut self) -> Result<Self::Ok, Self::Error> {
-        println!("{:?}", self.name);
         match self.name.as_str() {
             "___tycho___/uuid" => if let Some(Element::Value(Value::Bytes(x))) = self.content.get("inner") {
                 Ok(Element::Value(Value::UUID(Uuid::from_bytes(&x))))
@@ -72,6 +99,11 @@ impl SerializeStruct for StructSerializer {
                 Ok(x)
             } else {
                 Err(Self::Error::custom("Invalid serde transfer type for Array."))
+            },
+            "__tycho__/map" => if let Some(x) = self.content.remove("inner") {
+                Ok(x)
+            } else {
+                Err(Self::Error::custom("Invalid serde transfer type for Map."))
             },
             _ => Ok(Element::Struct(self.content))
         }

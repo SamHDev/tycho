@@ -6,9 +6,12 @@
 //! - `partial` - Partial Reading/Traversal
 //! - `serde_support` - Serde serialisation and deserialisation
 //! - `serde_optimise` - Serde structure optimisation (default)
+//! - `serde_types` - Serde structure type serialisation (default)
 //! - `async_tokio` - Async reading support with tokio
 //! - `compression` - Compression (gzip)
 //!
+
+#![allow(unused_imports)]
 
 pub use public::*;
 pub use types::ident;

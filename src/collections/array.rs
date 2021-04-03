@@ -62,6 +62,7 @@ impl<K: ValueType + TryFrom<Value>> TryFrom<Element> for Array<K> {
 use serde::{Serialize, Serializer};
 #[cfg(feature="serde_support")]
 use serde::ser::SerializeStruct;
+#[cfg(feature="serde_support")]
 use serde::ser::SerializeSeq;
 
 #[cfg(all(feature="serde_support", feature="serde_types"))]
