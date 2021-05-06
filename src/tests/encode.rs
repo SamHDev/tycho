@@ -1,6 +1,4 @@
-use std::str::FromStr;
-
-use crate::marshall_vec;
+use crate::{marshall_vec, Uuid};
 
 #[test]
 fn encode_bool_false() {
@@ -39,7 +37,7 @@ fn encode_string_emoji() {
 
 #[test]
 fn encode_uuid() {
-    let uuid = uuid::Uuid::from_str("13c5ded9-50af-4cf7-81e1-5e1f57a58b4c").unwrap();
+    let uuid = Uuid::from_string("13c5ded9-50af-4cf7-81e1-5e1f57a58b4c").unwrap();
     assert_eq!(
         marshall_vec(uuid).unwrap(),
         vec![1, 6, 19, 197, 222, 217, 80, 175, 76, 247, 129, 225, 94, 31, 87, 165, 139, 76]);

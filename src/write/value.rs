@@ -36,6 +36,7 @@ pub(crate) fn write_value<W: Write>(writer: &mut W, value: &Value) -> TychoStatu
             write_length(writer, v.len())?;
             write_bytes(writer, v)
         }
-        Value::UUID(uuid) => write_bytes(writer, &uuid.as_bytes().as_ref())
+        // todo: slow
+        Value::UUID(uuid) => write_bytes(writer, &uuid.bytes())
     }
 }

@@ -57,3 +57,35 @@ impl<K: ValueType + TryFrom<Value>> TryFrom<Element> for Array<K> {
         }
     }
 }
+
+#[cfg(feature="serde")]
+use serde::{Serialize, Serializer};
+#[cfg(feature="serde")]
+use serde::ser::SerializeStruct;
+#[cfg(feature="serde")]
+use serde::ser::SerializeSeq;
+
+/*
+#[cfg(all(feature="serde", feature="serde_types"))]
+impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        let mut stu = serializer.serialize_struct("___tycho___/array", 2)?;
+        stu.serialize_field("ident", &K::IDENT.to_internal_prefix())?;
+        stu.serialize_field("inner", &self.0)?;
+        stu.end()
+    }
+}
+
+#[cfg(all(feature="serde", not(feature="serde_types")))]
+impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        let mut seq = serializer.serialize_seq(Some(self.0.len()))?;
+        for x in self.0 {
+            seq.serialize_element(x)?;
+        }
+        seq.end()
+    }
+}
+*/

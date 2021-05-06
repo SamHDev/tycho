@@ -1,9 +1,9 @@
 //! Error types returned from tycho marshall/unmarshall/serialise/deserialize processes.
 use std::fmt;
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use crate::ident::ElementIdent;
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use crate::types::ident::ValueIdent;
 
 #[derive(Debug)]
@@ -28,13 +28,13 @@ pub enum TychoError {
     /// A pointer was referenced, but is no-longer valid as the data may have changed.
     OutdatedPointer,
 
-    #[cfg(feature="serde_support")]
+    #[cfg(feature="serde")]
     /// A key was mismatched when handling serde.
     InvalidKeyType {
         /// The type of element found.
         found: ElementIdent
     },
-    #[cfg(feature="serde_support")]
+    #[cfg(feature="serde")]
     /// A type was mismatched when handling serde.
     MismatchedType {
         /// The type of element found.
@@ -89,12 +89,12 @@ impl fmt::Display for TychoError {
                 f.write_str("Failed to reference partial pointer, outdated in respect \
                 to reader."),
 
-            #[cfg(feature="serde_support")]
+            #[cfg(feature="serde")]
             TychoError::InvalidKeyType { found } =>
                 f.write_str(&format!("Invalid key type while serializing structure: found type\
                  {:?}", found)),
 
-            #[cfg(feature="serde_support")]
+            #[cfg(feature="serde")]
             TychoError::MismatchedType { found, expected } =>
                 f.write_str(&format!("Mismatched type while serializing structure of type\
                  {:?}: found type {:?}", expected, found)),
@@ -110,7 +110,7 @@ pub type TychoResult<T> = Result<T, TychoError>;
 pub type TychoStatus = TychoResult<()>;
 
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl serde::ser::Error for TychoError {
     fn custom<T>(msg: T) -> Self where
         T: std::fmt::Display {
@@ -118,7 +118,7 @@ impl serde::ser::Error for TychoError {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl serde::de::Error for TychoError {
     fn custom<T>(msg: T) -> Self where
         T: std::fmt::Display {

@@ -15,7 +15,7 @@ fn test() {
 
     let bytes = marshall_vec(data).unwrap();
 
-    println!("{:?}", bytes);
+    //println!("{:?}", bytes);
 
     let mut reader = PartialReader::from_vec(bytes);
     let root = reader.element().unwrap();

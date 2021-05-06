@@ -1,6 +1,5 @@
 use std::io::Read;
 
-use uuid::Uuid;
 
 use crate::error::{TychoError, TychoResult};
 use crate::ident::ValueIdent;
@@ -8,7 +7,7 @@ use crate::read::func::{read_byte, read_bytes};
 use crate::read::length::read_length;
 use crate::read::number::{read_number, read_number_ident};
 use crate::read::string::{read_char, read_string};
-use crate::Value;
+use crate::{Value, Uuid};
 
 pub(crate) fn read_value_ident<R: Read>(reader: &mut R) -> TychoResult<ValueIdent> {
     let byte = read_byte(reader)?;
@@ -37,6 +36,7 @@ pub(crate) fn read_value<R: Read>(reader: &mut R, ident: &ValueIdent) -> TychoRe
             let length = read_length(reader)?;
             Ok(Value::Bytes(read_bytes(reader, length)?))
         }
+        // todo: slow + suffering
         ValueIdent::UUID => {
             let bytes = [
                 read_byte(reader)?, read_byte(reader)?, read_byte(reader)?, read_byte(reader)?,
@@ -44,7 +44,7 @@ pub(crate) fn read_value<R: Read>(reader: &mut R, ident: &ValueIdent) -> TychoRe
                 read_byte(reader)?, read_byte(reader)?, read_byte(reader)?, read_byte(reader)?,
                 read_byte(reader)?, read_byte(reader)?, read_byte(reader)?, read_byte(reader)?,
             ];
-            Ok(Value::UUID(Uuid::from_bytes(bytes)))
+            Ok(Value::UUID(Uuid::from_slice(bytes)))
         }
     }
 }

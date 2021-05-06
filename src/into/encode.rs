@@ -67,7 +67,7 @@ value_from!(Boolean, bool);
 value_from!(Char, char);
 value_from!(String, String);
 value_from!(Bytes, Vec<u8>);
-value_from!(UUID, uuid::Uuid);
+value_from!(UUID, crate::Uuid);
 
 value_from_proc!(String, &str, String::from);
 value_from_proc!(Bytes, &[u8], Vec::from);

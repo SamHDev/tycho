@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::types::ident::ValueIdent;
+use crate::Uuid;
 
 #[derive(Debug, Clone, PartialOrd)]
 /// A numerical value tag, used when creating tycho data.
@@ -47,7 +48,7 @@ pub enum Value {
     Bytes(Vec<u8>),
 
     /// A 16 bytes unique identifier
-    UUID(uuid::Uuid),
+    UUID(Uuid),
 }
 
 #[derive(Debug, Clone, PartialEq)]

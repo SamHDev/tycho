@@ -33,6 +33,9 @@ impl Serializer for TychoSerializer {
     type SerializeStruct = StructSerializer;
     type SerializeStructVariant = VariantStructSerializer;
 
+    fn is_human_readable(&self) -> bool { false }
+
+
     fn serialize_bool(self, v: bool) -> Result<Self::Ok, Self::Error> {
         Ok(Element::Value(Value::Boolean(v)))
     }
@@ -99,7 +102,7 @@ impl Serializer for TychoSerializer {
     }
 
     fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple, Self::Error> {
-        unimplemented!()
+        Ok(Self::SerializeSeq::new(SeqSerializerType::Default))
     }
 
     fn serialize_tuple_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeTupleStruct, Self::Error> {

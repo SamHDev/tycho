@@ -2,5 +2,8 @@ mod encode;
 mod length;
 mod numbers;
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 mod docs;
+
+#[cfg(feature="serde")]
+mod serde;

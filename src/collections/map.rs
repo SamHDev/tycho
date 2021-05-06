@@ -57,3 +57,35 @@ impl<K: ValueType + Hash + Eq + TryFrom<Value>> TryFrom<Element> for Map<K> {
         }
     }
 }
+/*
+#[cfg(feature="serde")]
+use serde::{Serialize, Serializer};
+#[cfg(feature="serde")]
+use serde::ser::SerializeStruct;
+#[cfg(feature="serde")]
+use serde::ser::SerializeSeq;
+use serde::ser::SerializeMap;
+
+#[cfg(all(feature="serde", feature="serde_types"))]
+impl<K: ValueType + Hash + Eq + TryFrom<Value> + Serialize> Serialize for Map<K> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        let mut stu = serializer.serialize_struct("___tycho___/map", 2)?;
+        stu.serialize_field("ident", &K::IDENT.to_internal_prefix())?;
+        stu.serialize_field("inner", &self.0)?;
+        stu.end()
+    }
+}
+
+#[cfg(all(feature="serde", not(feature="serde_types")))]
+impl<K: ValueType + Hash + Eq + TryFrom<Value> + Serialize> Serialize for Map<K> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        let mut seq = serializer.serialize_map(Some(self.0.len()))?;
+        for (k, v) in self.0 {
+            seq.serialize_entry(k ,&v)?;
+        }
+        seq.end()
+    }
+}
+*/

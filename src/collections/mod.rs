@@ -8,9 +8,11 @@ pub use array::Array;
 pub use list::List;
 pub use map::Map;
 pub use struct_::Struct;
+pub use bytes::Bytes;
 
 pub(crate) mod array;
 pub(crate) mod list;
 pub(crate) mod map;
 pub(crate) mod struct_;
+pub(crate) mod bytes;
 

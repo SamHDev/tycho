@@ -4,11 +4,13 @@
 //!
 //! ### Features
 //! - `partial` - Partial Reading/Traversal
-//! - `serde_support` - Serde serialisation and deserialisation
+//! - `serde` - Serde serialisation and deserialisation
 //! - `serde_optimise` - Serde structure optimisation (default)
+//! - `serde_types` - Serde structure type serialisation (default)
 //! - `async_tokio` - Async reading support with tokio
 //! - `compression` - Compression (gzip)
-//!
+
+#![allow(unused_imports)]
 
 pub use public::*;
 pub use types::ident;
@@ -24,7 +26,7 @@ pub(crate) mod public;
 #[cfg(feature="partial")]
 pub mod partial;
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 mod serde;
 
 pub mod collections;
@@ -32,3 +34,6 @@ pub mod error;
 
 #[cfg(test)]
 mod tests;
+
+pub(crate) mod uuid;
+pub use crate::uuid::Uuid;

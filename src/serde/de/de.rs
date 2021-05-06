@@ -71,7 +71,7 @@ impl<'de> Deserializer<'de> for TychoDeserializer {
                     Number::Float64(v) => visitor.visit_f64(v)
                 }
                 Value::Bytes(v) => visitor.visit_byte_buf(v),
-                Value::UUID(v) => visitor.visit_bytes(v.as_bytes())
+                Value::UUID(v) => visitor.visit_bytes(&v.bytes())
             },
             Element::Option(option) => match option {
                 Some(v) => visitor.visit_some(TychoDeserializer::new(*v)),
@@ -82,7 +82,12 @@ impl<'de> Deserializer<'de> for TychoDeserializer {
             Element::List(x) => visitor.visit_seq(SeqListDeserializer::new(x)),
             Element::Array(_, x) => visitor.visit_seq(SeqArrayDeserializer::new(x)),
             Element::Map(_, x) => visitor.visit_map(MapDeserializer::new(x)),
+
+            #[cfg(feature="compression")]
             Element::Compression(x) => TychoDeserializer::new(*x).deserialize_any(visitor),
+
+            #[cfg(not(feature="compression"))]
+            Element::Compression(x) => TychoDeserializer::new(Element::Value(Value::Bytes(x))).deserialize_bytes(visitor),
         }
     }
 
