@@ -1,6 +1,6 @@
 [package]
 name = "tycho"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Sam Huddart <sam.fucked.up@samh.dev>"]
 edition = "2018"
 description = "A minimal, self-describing and traversable binary data format designed around rust and the serde data model."
@@ -8,7 +8,7 @@ license="MIT"
 documentation="https://docs.rs/tycho"
 repository = "https://github.com/samhdev/tycho"
 homepage = "https://github.com/samhdev/tycho"
-keywords = ["format", "serde", "tokio", "tycho"]
+keywords = ["format", "serde", "tokio", "tycho", "binary"]
 
 [features]
 partial = []
@@ -16,7 +16,7 @@ partial_state = []
 async_tokio = ["tokio", "tokio-byteorder", "futures", "async-trait"]
 serde_optimise = []
 serde_types = []
-default = ["serde_optimise", "serde_types"]
+default = ["serde", "serde_optimise", "serde_types"]
 compression = ["flate2"]
 
 [dependencies]

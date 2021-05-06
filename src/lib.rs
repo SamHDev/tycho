@@ -35,6 +35,5 @@ pub mod error;
 #[cfg(test)]
 mod tests;
 
-#[cfg(feature="uuid")]
 pub(crate) mod uuid;
 pub use crate::uuid::Uuid;

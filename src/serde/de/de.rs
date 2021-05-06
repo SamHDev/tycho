@@ -82,7 +82,12 @@ impl<'de> Deserializer<'de> for TychoDeserializer {
             Element::List(x) => visitor.visit_seq(SeqListDeserializer::new(x)),
             Element::Array(_, x) => visitor.visit_seq(SeqArrayDeserializer::new(x)),
             Element::Map(_, x) => visitor.visit_map(MapDeserializer::new(x)),
+
+            #[cfg(feature="compression")]
             Element::Compression(x) => TychoDeserializer::new(*x).deserialize_any(visitor),
+
+            #[cfg(not(feature="compression"))]
+            Element::Compression(x) => TychoDeserializer::new(Element::Value(Value::Bytes(x))).deserialize_bytes(visitor),
         }
     }
 
