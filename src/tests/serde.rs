@@ -18,7 +18,7 @@ fn test_serde_uuid() {
     println!("{:?}", from_element::<Example, Element>(e));
 }
 
-/*
+
 #[test]
 fn test_serde_array() {
     let mut a = Array::new();
@@ -31,5 +31,5 @@ fn test_serde_array() {
 
     //println!("{:?}", from_element::<Array<i32>, Element>(e));
 }
-*/
+
 
