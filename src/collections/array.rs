@@ -58,14 +58,14 @@ impl<K: ValueType + TryFrom<Value>> TryFrom<Element> for Array<K> {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use serde::{Serialize, Serializer};
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use serde::ser::SerializeStruct;
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use serde::ser::SerializeSeq;
 
-#[cfg(all(feature="serde_support", feature="serde_types"))]
+#[cfg(all(feature="serde", feature="serde_types"))]
 impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
@@ -76,7 +76,7 @@ impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
     }
 }
 
-#[cfg(all(feature="serde_support", not(feature="serde_types")))]
+#[cfg(all(feature="serde", not(feature="serde_types")))]
 impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {

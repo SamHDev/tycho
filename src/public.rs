@@ -2,7 +2,7 @@ use std::io::{BufWriter, Cursor, Read, Write};
 
 #[cfg(feature="async_tokio")]
 pub use async_tokio_public::*;
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 pub use serde_public::*;
 
 use crate::Element;
@@ -154,7 +154,7 @@ mod async_tokio_public {
 }
 
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 mod serde_public {
     use serde::de::DeserializeOwned;
     use serde::Serialize;
@@ -164,7 +164,7 @@ mod serde_public {
     use crate::serde::de::TychoDeserializer;
     use crate::serde::ser::TychoSerializer;
 
-    /// Serialize a serde serializable object into an Element. (requires `serde_support`)
+    /// Serialize a serde serializable object into an Element. (requires `serde`)
     ///
     /// ```
     /// use serde::Serialize;
@@ -193,7 +193,7 @@ mod serde_public {
         o.serialize(TychoSerializer)
     }
 
-    /// Serialize a serde serializable object into tycho bytes.  (requires `serde_support`)
+    /// Serialize a serde serializable object into tycho bytes.  (requires `serde`)
     ///
     /// ```
     /// use serde::Serialize;
@@ -217,7 +217,7 @@ mod serde_public {
         marshall_vec(to_element(o)?)
     }
 
-    /// Deserialize an element into a serde deserializable object. (requires `serde_support`)
+    /// Deserialize an element into a serde deserializable object. (requires `serde`)
     ///
     /// ```
     /// use serde::Deserialize;
@@ -243,7 +243,7 @@ mod serde_public {
         D::deserialize(TychoDeserializer::new(e.into()))
     }
 
-    /// Deserialize tycho bytes into a serde deserializable object. (requires `serde_support`)
+    /// Deserialize tycho bytes into a serde deserializable object. (requires `serde`)
     ///
     /// ```
     /// use serde::Deserialize;

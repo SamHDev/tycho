@@ -1,9 +1,9 @@
 # Tycho Binary Format
 A minimal, self-describing and traversable data format designed around rust and the serde data model.
 
-[![crates.io badge](https://img.shields.io/crates/v/tycho.svg)](https://crates.io/crates/tycho)
-[![docs.rs badge](https://docs.rs/tycho/badge.svg)](https://docs.rs/tycho)
-[![Downloads badge](https://img.shields.io/crates/d/tycho.svg)](https://crates.io/crates/tycho)
+[![crates.io badge](https://img.shields.io/crates/v/tycho.svg?style=for-the-badge)](https://crates.io/crates/tycho)
+[![docs.rs badge](https://img.shields.io/docsrs/tycho.svg?style=for-the-badge&color=blue)](https://docs.rs/tycho)
+[![Downloads badge](https://img.shields.io/crates/d/tycho.svg?style=for-the-badge)](https://crates.io/crates/tycho)
 
 ### Design Features
 - Small storage sizes

@@ -1,5 +1,6 @@
 use crate::types::ident::{ValueIdent, NumberIdent};
 
+#[allow(dead_code)]
 impl ValueIdent {
     pub(crate) fn to_internal_prefix(&self) -> u8 {
         match &self {

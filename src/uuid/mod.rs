@@ -210,10 +210,10 @@ impl fmt::Display for Uuid {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use serde::{Serialize, Serializer, Deserialize, Deserializer, de::Visitor, de::Error as DeError, ser::SerializeStruct};
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl Serialize for Uuid {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
@@ -231,10 +231,10 @@ impl Serialize for Uuid {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 pub struct UuidBytes([u8; 16]);
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl Serialize for UuidBytes {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
@@ -242,7 +242,7 @@ impl Serialize for UuidBytes {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl<'de> Deserialize<'de> for Uuid {
     fn deserialize<D>(deserializer: D) -> Result<Self, <D as Deserializer<'de>>::Error> where
         D: Deserializer<'de> {
@@ -250,10 +250,10 @@ impl<'de> Deserialize<'de> for Uuid {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 pub struct UuidVisitor;
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl<'de> Visitor<'de> for UuidVisitor {
     type Value = Uuid;
 

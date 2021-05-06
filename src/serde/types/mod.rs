@@ -1,8 +1,8 @@
 use serde::{Serialize, Serializer};
 use crate::{Element, Value, Number};
-use hex::serialize;
-use serde::ser::SerializeStruct;
+use serde::ser::{SerializeStruct, SerializeSeq, SerializeMap};
 
+#[cfg(feature="serde_types")]
 impl Serialize for Element {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
@@ -13,19 +13,55 @@ impl Serialize for Element {
                 Some(x) => serializer.serialize_some(x),
                 None => serializer.serialize_none()
             },
-            Element::Variant(n, v) => serializer.serialize_newtype_variant("", 0, n, v),
+            Element::Variant(n, v) => serializer.serialize_newtype_variant("", 0, &*n.to_string(), v),
             Element::Struct(x) => {
-                let mut s = serializer.serialize_struct("", x.len())?;
-                for (k, v) in x {
-                    s.serialize_field(k, v)?;
-                }
+                let mut s = serializer.serialize_struct("___tycho___/struct", 1)?;
+                s.serialize_field("inner", x);
+                s.end()
+            },
+            Element::List(x) => {
+                let mut s = serializer.serialize_struct("___tycho___/list", 1)?;
+                s.serialize_field("inner", x);
                 s.end()
             }
-            Element::List(x) => {}
-            Element::Array(_, _) => {}
-            Element::Map(_, _) => {}
-            Element::Compression(_) => {}
-            Element::Compression(_) => {}
+            Element::Array(i, x) => {
+                let mut s = serializer.serialize_struct("___tycho___/array", 2)?;
+                s.serialize_field("ident", &i.to_internal_prefix())?;
+                s.serialize_field("inner", x)?;
+                s.end()
+            }
+            Element::Map(i, x) => {
+                let mut s = serializer.serialize_struct("___tycho___/map", 2)?;
+                s.serialize_field("ident", &i.to_internal_prefix())?;
+                s.serialize_field("inner", x)?;
+                s.end()
+            }
+            Element::Compression(c) => {
+                let mut s = serializer.serialize_struct("___tycho___/compression", 1)?;
+                s.serialize_field("inner", c);
+                s.end()
+            }
+        }
+    }
+}
+
+#[cfg(not(feature="serde_types"))]
+impl Serialize for Element {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
+        S: Serializer {
+        match self {
+            Element::Unit => serializer.serialize_unit(),
+            Element::Value(x) => x.serialize(serializer),
+            Element::Option(o) => match o {
+                Some(x) => serializer.serialize_some(x),
+                None => serializer.serialize_none()
+            },
+            Element::Variant(n, v) => serializer.serialize_newtype_variant("", 0, &n.to_string(), v),
+            Element::Struct(x) => x.serialize(serializer),
+            Element::List(x) => x.serialize(serializer),
+            Element::Array(_i, x) => x.serialize(serializer),
+            Element::Map(_i, x) => x.serialize(serializer),
+            Element::Compression(c) => c.serialize(serializer),
         }
     }
 }
@@ -49,7 +85,7 @@ impl Serialize for Number {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
         match self {
-            Number::Bit(x) => serializer.serialize_bool(x == 0x01),
+            Number::Bit(x) => serializer.serialize_bool(*x),
             Number::Unsigned8(x) => serializer.serialize_u8(*x),
             Number::Signed8(x) => serializer.serialize_i8(*x),
             Number::Unsigned16(x) => serializer.serialize_u16(*x),
@@ -66,7 +102,7 @@ impl Serialize for Number {
 
             #[cfg(feature="serde_types")]
             Number::Unsigned128(x) => {
-                let mut stu = serializer.serialize_struct("___tycho___/u128")?;
+                let mut stu = serializer.serialize_struct("___tycho___/u128", 2)?;
                 stu.serialize_field("0", &((x >> 64) as u64))?;
                 stu.serialize_field("1", &((x & 0xFFFF_FFFF_FFFF_FFFF) as u64))?;
                 stu.end()
@@ -74,9 +110,9 @@ impl Serialize for Number {
 
             #[cfg(feature="serde_types")]
             Number::Signed128(x) => {
-                let mut stu = serializer.serialize_struct("___tycho___/i128")?;
-                stu.serialize_field("0", &(((x as u128) >> 64) as u64))?;
-                stu.serialize_field("1", &(((x as u128) & 0xFFFF_FFFF_FFFF_FFFF) as u64))?;
+                let mut stu = serializer.serialize_struct("___tycho___/i128", 2)?;
+                stu.serialize_field("0", &(((*x as u128) >> 64) as u64))?;
+                stu.serialize_field("1", &(((*x as u128) & 0xFFFF_FFFF_FFFF_FFFF) as u64))?;
                 stu.end()
             }
 

@@ -31,10 +31,10 @@ impl Bytes {
     }
 }
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 use serde::{Serialize, Serializer};
 
-#[cfg(feature="serde_support")]
+#[cfg(feature="serde")]
 impl Serialize for Bytes {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
         S: Serializer {
