@@ -9,7 +9,6 @@
 //! - `serde_types` - Serde structure type serialisation (default)
 //! - `async_tokio` - Async reading support with tokio
 //! - `compression` - Compression (gzip)
-//!
 
 #![allow(unused_imports)]
 
@@ -36,6 +35,6 @@ pub mod error;
 #[cfg(test)]
 mod tests;
 
-
+#[cfg(feature="uuid")]
 pub(crate) mod uuid;
 pub use crate::uuid::Uuid;

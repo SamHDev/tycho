@@ -65,6 +65,7 @@ use serde::ser::SerializeStruct;
 #[cfg(feature="serde")]
 use serde::ser::SerializeSeq;
 
+/*
 #[cfg(all(feature="serde", feature="serde_types"))]
 impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
     fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
@@ -87,3 +88,4 @@ impl<K: ValueType + TryFrom<Value> + Serialize> Serialize for Array<K> {
         seq.end()
     }
 }
+*/

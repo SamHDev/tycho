@@ -2,6 +2,11 @@ use std::fmt;
 
 #[derive(Clone, Ord, PartialOrd, Eq, PartialEq)]
 /// A simple UUID (v4) implementation.
+///
+/// Rather than using the `uuid` crate, tycho has it's own implementation of uuids
+/// for better handling between serde and elements.
+///
+///
 pub struct Uuid(u128);
 
 impl Uuid {
